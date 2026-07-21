@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="An interactive LEGO entertainment strategy story by Harvey Yang and team">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Building Beyond the Brick — Harvey Yang</title>
+    <style>
+      :root {
+        font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+        font-weight: 400;
+
+        color-scheme: light dark;
+        color: rgba(255, 255, 255, 0.87);
+
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+
+        --border-radius: 3px;
+        --light: #eae2b7;
+        --focus: #fcbf49;
+        --primary: #f77f00;
+        --secondary: #d62828;
+        --dark: #003049;
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+        --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+      }
+
+      html {
+        height: 100dvh;
+        overscroll-behavior: none;
+        overflow: hidden;
+        font-size: 100%;
+      }
+
+      body {
+        background-color: var(--dark);
+        transition: background-color 240ms var(--ease-out);
+      }
+
+      canvas {
+        touch-action: none;
+      }
+
+      .home {
+        background-color: var(--light);
+      }
+
+      .contact {
+        background-color: var(--secondary);
+      }
+
+      .workExperience {
+        background-color: var(--focus);
+      }
+
+      .workProject {
+        background-color: var(--primary);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      #root {
+        height: 100%;
+      }
+
+      button {
+        border-radius: var(--border-radius);
+        border: none;
+        padding: 0.6em 1.2em;
+        line-height: 1;
+        font-size: 1.25em;
+        font-weight: 500;
+        font-family: monospace;
+        background-color: white;
+        text-transform: uppercase;
+        color: black;
+        cursor: pointer;
+        transition: background-color 140ms ease, transform 140ms var(--ease-out);
+        border-color: black;
+        border-width: 2px 4px 4px 2px;
+        border-style: solid;
+      }
+
+      button:hover {
+        background-color: var(--focus);
+      }
+
+      button:focus,
+      button:focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      button:active {
+        background-color: var(--light);
+        transform: scale(0.97);
+      }
+
+      a,
+      a:visited {
+        color: var(--primary);
+      }
+
+      a:hover {
+        color: var(--focus);
+      }
+
+      a:active {
+        color: var(--secondary);
+      }
+
+      dialog {
+        font-family: monospace;
+        padding: 1rem;
+        background-color: var(--dark);
+        border-radius: var(--border-radius);
+        border-color: white;
+        border-width: 1px 3px 3px 1px;
+        border-style: solid;
+        color: white;
+        position: absolute;
+        transition:
+          opacity 0.25s ease-in-out,
+          top 0.25s cubic-bezier(0.5, 0.74, 0.55, 0.97),
+          transform 0.25s cubic-bezier(0.5, 0.74, 0.55, 0.97);
+        opacity: 0;
+        top: 52.5%;
+        margin-inline: auto;
+        width: 100%;
+        max-width: 600px;
+        height: calc(50dvh - 1rem);
+      }
+
+      dialog.modal-visible {
+        opacity: 1;
+        top: 50%;
+      }
+
+      dialog::backdrop {
+        opacity: 0;
+      }
+
+      dialog button {
+        padding: 0.25em 0.5em;
+      }
+
+      dialog .dialog-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1em;
+      }
+
+      dialog h2 {
+        text-align: center;
+      }
+
+      dialog .project-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2em;
+        margin-bottom: 1em;
+      }
+
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+      }
+
+      ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5em;
+      }
+
+      li::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary);
+        display: inline-block;
+        margin-right: 0.5em;
+      }
+
+      .company-logo {
+        display: flex;
+        justify-content: center;
+      }
+
+      .company-logo img {
+        min-width: 0;
+        max-width: 150px;
+        object-fit: contain;
+      }
+
+      .company {
+        display: flex;
+        gap: 0.5em;
+        justify-content: center;
+      }
+
+      .duration {
+        font-style: italic;
+        font-size: 0.75rem;
+        text-align: center;
+      }
+
+      .duration .delta {
+        color: var(--primary);
+      }
+
+      .interaction-area {
+        pointer-events: none;
+        position: absolute;
+        inset: 0;
+        padding: 0.25em 1em 3em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+        transition: opacity 250ms ease-in-out;
+        opacity: 0;
+      }
+
+      body.show-interaction-area .interaction-area {
+        opacity: 1;
+      }
+
+      .interaction-area :is(.search, button) {
+        pointer-events: all;
+      }
+
+      .search {
+        font-family: monospace;
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        width: 100%;
+        max-width: 450px;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        margin-bottom: auto;
+        padding: 0.5em 1em;
+        background-color: white;
+        transition: opacity 300ms ease;
+        opacity: 1;
+        border-color: black;
+        border-width: 2px 4px 4px 2px;
+        border-style: solid;
+        /* Force GPU for mobile devices */
+        transform: translateZ(0);
+      }
+
+      .search.hidden {
+        opacity: 0;
+      }
+
+      .search .icon {
+        fill: none;
+        stroke: var(--dark);
+      }
+
+      .search:focus-within {
+        background-color: var(--light);
+      }
+
+      .search input[type="text"] {
+        font-size: clamp(16px, 1rem, 24px);
+        font-family: inherit;
+        outline: none;
+        border: none;
+        background: none;
+        color: black;
+      }
+
+      .search input[type="text"]::placeholder {
+        font-family: monospace;
+        color: black;
+        opacity: 0.75;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.65rem;
+        font-size: 0.875rem;
+        margin-top: auto;
+        margin-inline: auto;
+        width: 100%;
+        max-width: 850px;
+      }
+
+      .story-advance {
+        min-width: min(92vw, 340px);
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.8rem;
+        padding: 0.7rem 1rem;
+        border-radius: 14px;
+        text-align: left;
+        text-transform: none;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+        transition:
+          transform 150ms var(--ease-out),
+          background-color 150ms ease,
+          box-shadow 150ms ease;
+      }
+
+      .story-advance:hover {
+        background: var(--focus);
+        box-shadow: 0 16px 42px rgba(0, 0, 0, 0.3);
+      }
+
+      .story-advance:active {
+        transform: scale(0.97);
+      }
+
+      .story-advance svg {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 auto;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+      }
+
+      .story-advance span {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .story-advance strong {
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+      }
+
+      .story-advance small {
+        font-size: 0.68rem;
+        color: #4a4a4a;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .story-progress {
+        display: flex;
+        gap: 0.4rem;
+        padding: 0.35rem 0.55rem;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.34);
+      }
+
+      .story-progress span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.45);
+        transition: transform 180ms var(--ease-out), background-color 180ms ease;
+      }
+
+      .story-progress span.active {
+        background: var(--focus);
+        transform: scale(1.35);
+      }
+
+      .interaction-area {
+        z-index: 4;
+      }
+
+      .narrative-deck {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        display: grid;
+        place-items: center;
+        padding: 1.4rem 2.5rem 7.6rem;
+        overflow: hidden;
+      }
+
+      .skills-story-caption {
+        position: absolute;
+        z-index: 2;
+        top: clamp(7.5rem, 18vh, 10.5rem);
+        left: clamp(1rem, 3vw, 2.5rem);
+        width: min(27vw, 330px);
+        padding: 1.15rem;
+        color: white;
+        background: rgba(12, 13, 16, 0.92);
+        border: 3px solid #ffcf00;
+        border-radius: 14px;
+        box-shadow: 8px 8px 0 #e2231a, 0 18px 40px rgba(0, 0, 0, 0.36);
+        pointer-events: none;
+        animation: deck-enter 240ms var(--ease-out) both;
+      }
+
+      .hero-slide-title {
+        position: absolute;
+        z-index: 2;
+        top: clamp(1rem, 3vh, 1.75rem);
+        left: clamp(1rem, 3vw, 2.5rem);
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: stretch;
+        min-width: min(27vw, 280px);
+        color: #ffcf00;
+        background: rgba(12, 13, 16, 0.94);
+        border: 4px solid #e2231a;
+        border-radius: 14px;
+        box-shadow: 7px 7px 0 rgba(255, 207, 0, 0.95), 0 18px 35px rgba(0, 0, 0, 0.28);
+        pointer-events: none;
+        overflow: hidden;
+        animation: deck-enter 240ms var(--ease-out) both;
+      }
+
+      .hero-slide-title span {
+        display: grid;
+        place-items: center;
+        padding: 0.7rem 0.75rem;
+        color: #111318;
+        background: #ffcf00;
+        font: 900 0.8rem/1 monospace;
+      }
+
+      .hero-slide-title strong {
+        padding: 0.65rem 1rem 0.72rem;
+        font: 900 clamp(1rem, 2vw, 1.6rem)/0.94 system-ui, sans-serif;
+        letter-spacing: -0.03em;
+      }
+
+      .skills-story-caption > p {
+        color: #ffcf00;
+        font: 900 0.68rem/1 monospace;
+        letter-spacing: 0.1em;
+      }
+
+      .skills-story-caption h2 {
+        margin-block: 0.65rem 0.8rem;
+        font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+        line-height: 1.08;
+      }
+
+      .skills-story-caption ol {
+        display: grid;
+        gap: 0.42rem;
+        padding-left: 1.2rem;
+        color: #d8dbe2;
+        font: 0.73rem/1.35 monospace;
+      }
+
+      .skills-story-caption li::marker {
+        color: #ffcf00;
+        font-weight: 900;
+      }
+
+      .skills-story-caption > span {
+        display: block;
+        margin-top: 0.9rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffcf00;
+        font: 800 0.68rem/1.4 monospace;
+      }
+
+      .narrative-deck::before,
+      .narrative-deck::after {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--focus);
+        box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2), 0 0 0 5px #e2231a;
+      }
+
+      .narrative-deck::before {
+        top: 1.6rem;
+        left: 2rem;
+      }
+
+      .narrative-deck::after {
+        right: 2rem;
+        bottom: 7.8rem;
+      }
+
+      .deck-counter {
+        position: absolute;
+        z-index: 3;
+        top: 1.35rem;
+        right: 2.2rem;
+        padding: 0.38rem 0.65rem;
+        border-radius: 999px;
+        color: #ffcf00;
+        background: rgba(12, 13, 16, 0.88);
+        border: 2px solid #e2231a;
+        font: 800 0.7rem/1 monospace;
+        letter-spacing: 0.08em;
+      }
+
+      .ppt-story-frame,
+      .custom-story-slide {
+        width: min(92vw, 1120px);
+        max-height: calc(100dvh - 10.5rem);
+        border: 5px solid #111318;
+        border-radius: 18px;
+        outline: 4px solid #e2231a;
+        background: #111318;
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.46);
+        overflow: hidden;
+        animation: deck-enter 240ms var(--ease-out) both;
+      }
+
+      .ppt-story-frame img {
+        display: block;
+        width: 100%;
+        max-height: calc(100dvh - 10.5rem);
+        object-fit: contain;
+        background: #0b0c10;
+      }
+
+      .custom-story-slide {
+        min-height: min(64dvh, 540px);
+        padding: clamp(1.5rem, 4vw, 3.5rem);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: clamp(1.2rem, 2.4vw, 2rem);
+      }
+
+      .deck-eyebrow {
+        color: #ffcf00;
+        font: 800 0.78rem/1 monospace;
+        letter-spacing: 0.12em;
+      }
+
+      .custom-story-slide h2 {
+        max-width: 900px;
+        font-size: clamp(1.8rem, 4vw, 3.8rem);
+        line-height: 1.02;
+      }
+
+      .test-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+
+      .test-grid article {
+        min-height: 190px;
+        padding: 1.3rem;
+        border-radius: 14px;
+        background: #1b1e26;
+        border-top: 10px solid var(--focus);
+      }
+
+      .test-grid article:nth-child(2) { border-color: #087bc1; }
+      .test-grid article:nth-child(3) { border-color: #00a651; }
+
+      .test-grid span {
+        color: #ffcf00;
+        font: 900 1.1rem monospace;
+      }
+
+      .test-grid h3 {
+        margin-block: 0.75rem 0.55rem;
+        font-size: 1.15rem;
+      }
+
+      .test-grid p {
+        color: #c8ccd5;
+        font-size: 0.88rem;
+        line-height: 1.45;
+      }
+
+      .deck-verdict {
+        align-self: flex-start;
+        padding: 0.75rem 1.1rem;
+        border-radius: 10px;
+        color: #111318;
+        background: #ffcf00;
+        font-size: clamp(0.9rem, 2vw, 1.25rem);
+      }
+
+      .audience-challenge {
+        background: linear-gradient(145deg, #0b0c10 15%, #15364f 100%);
+        text-align: center;
+        align-items: center;
+      }
+
+      .challenge-path {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+      }
+
+      .challenge-path span {
+        padding: 0.9rem 1rem;
+        border-radius: 10px;
+        color: #111318;
+        background: #ffcf00;
+        font-weight: 900;
+      }
+
+      .challenge-path span:nth-of-type(2) { background: #e2231a; color: white; }
+      .challenge-path span:nth-of-type(3) { background: #087bc1; color: white; }
+      .challenge-path span:nth-of-type(4) { background: #00a651; color: white; }
+
+      .challenge-path b {
+        color: white;
+        font-size: 1.5rem;
+      }
+
+      .audience-challenge > p:last-child {
+        color: #d9dde4;
+        font-size: clamp(1rem, 2vw, 1.3rem);
+      }
+
+      @keyframes deck-enter {
+        from { opacity: 0; transform: translateY(14px) scale(0.985); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .actions button:disabled.download {
+        opacity: 0.5;
+      }
+
+      .download {
+        grid-column: span 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5em;
+      }
+
+      .download svg {
+        flex-shrink: 0;
+      }
+
+      .carousel-button {
+        width: fit-content;
+        border: none;
+        box-shadow: unset;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 400;
+        grid-row: 1 / 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6em 0.6em;
+      }
+
+      .carousel-button.left {
+        justify-self: start;
+      }
+
+      .carousel-button.right {
+        justify-self: end;
+      }
+
+      .carousel-button,
+      .carousel-button:hover,
+      .carousel-button:active,
+      .carousel-button:focus,
+      .carousel-button:focus-visible {
+        background-color: transparent;
+      }
+
+      .carousel-button:focus,
+      .carousel-button:focus-visible {
+        outline: unset;
+      }
+
+      .carousel-button svg {
+        background-color: black;
+        border-radius: 50%;
+        transition: background-color 100ms ease-in-out;
+        flex-shrink: 0;
+      }
+
+      .carousel-button:hover svg {
+        background-color: var(--primary);
+      }
+
+      .carousel-button:active svg {
+        background-color: var(--focus);
+        transition: none;
+      }
+
+      .carousel-button:focus svg {
+        outline: 3px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      .carousel-button p {
+        padding-inline: 0.6em;
+        font-weight: bold;
+        filter: drop-shadow(2.5px 2.5px black) drop-shadow(-0.5px -0.5px black);
+      }
+
+      .initials {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: clamp(50px, 50vw, 200px);
+        transition: opacity ease-out 250ms;
+        opacity: 1;
+      }
+
+      .initials.hidden {
+        opacity: 0;
+      }
+
+      .initials #wave path {
+        animation: logo-loader 4s ease-in-out infinite alternate;
+      }
+
+      .initials .background-letters {
+        fill: var(--focus);
+      }
+
+      .initials .foreground-letters {
+        fill: var(--secondary);
+      }
+
+      @keyframes logo-loader {
+        from {
+          transform: translate(-1000px, 0px);
+        }
+
+        to {
+          transform: translate(0px, -100px);
+        }
+      }
+
+      .legacy-initials {
+        display: none;
+      }
+
+      .lego-loader {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 10;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        color: white;
+        font-family: monospace;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        opacity: 1;
+        transition: opacity 200ms var(--ease-out), filter 200ms ease;
+      }
+
+      .lego-loader.hidden {
+        opacity: 0;
+        filter: blur(2px);
+        pointer-events: none;
+      }
+
+      .loader-bricks {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 78px;
+      }
+
+      .loader-brick {
+        position: relative;
+        width: 58px;
+        height: 34px;
+        border: 3px solid #111;
+        border-radius: 4px;
+        box-shadow: inset -6px -7px rgba(0, 0, 0, 0.15), 0 8px 0 rgba(0, 0, 0, 0.2);
+        animation: brick-stack 900ms var(--ease-in-out) infinite alternate;
+      }
+
+      .loader-brick:nth-child(1) { background: #e2231a; }
+      .loader-brick:nth-child(2) { background: #ffcf00; animation-delay: 110ms; }
+      .loader-brick:nth-child(3) { background: #0084c8; animation-delay: 220ms; }
+
+      .loader-brick::before,
+      .loader-brick::after {
+        content: "";
+        position: absolute;
+        top: -13px;
+        width: 18px;
+        height: 10px;
+        border: 3px solid #111;
+        border-bottom: 0;
+        border-radius: 8px 8px 0 0;
+        background: inherit;
+      }
+
+      .loader-brick::before { left: 5px; }
+      .loader-brick::after { right: 5px; }
+
+      @keyframes brick-stack {
+        from { transform: translateY(10px) rotate(-2deg); }
+        to { transform: translateY(-10px) rotate(2deg); }
+      }
+
+      .lego-story-modal .dialog-title {
+        align-items: flex-start;
+      }
+
+      .story-project-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.35rem;
+        margin-bottom: 1rem;
+      }
+
+      .story-project-tabs button {
+        min-height: 2.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.22);
+        border-radius: 8px;
+        color: white;
+        background: rgba(255, 255, 255, 0.08);
+        font: 800 0.65rem/1.1 monospace;
+        cursor: pointer;
+        transition: transform 140ms var(--ease-out), border-color 140ms ease, background 140ms ease;
+      }
+
+      .story-project-tabs button:hover {
+        transform: translateY(-2px);
+        border-color: #ffcf00;
+      }
+
+      .story-project-tabs button.active {
+        color: #111318;
+        border-color: #ffcf00;
+        background: #ffcf00;
+      }
+
+      .story-eyebrow {
+        color: var(--focus);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.4rem;
+      }
+
+      .story-summary {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.65;
+        margin-bottom: 1rem;
+      }
+
+      .story-sequence {
+        list-style: none;
+        display: grid;
+        gap: 0.65rem;
+      }
+
+      .story-sequence li {
+        display: grid;
+        grid-template-columns: 2.2rem 1fr;
+        gap: 0.65rem;
+        align-items: start;
+        padding: 0.7rem;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+          opacity 220ms var(--ease-out) calc(var(--story-index) * 55ms),
+          transform 220ms var(--ease-out) calc(var(--story-index) * 55ms);
+      }
+
+      dialog:not(.modal-visible) .story-sequence li {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      .story-sequence li::before { display: none; }
+
+      .story-sequence li > span {
+        color: var(--focus);
+        font-size: 1rem;
+        font-weight: 900;
+      }
+
+      .story-click-note {
+        margin-top: 1rem;
+        color: var(--focus);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        body,
+        button,
+        .story-progress span,
+        .story-sequence li,
+        .lego-loader {
+          transition-duration: 100ms !important;
+        }
+
+        .loader-brick {
+          animation: none;
+        }
+
+        .ppt-story-frame,
+        .custom-story-slide,
+        .skills-story-caption,
+        .hero-slide-title {
+          animation: none;
+        }
+      }
+
+      @media screen and (max-width: 700px) {
+        .hero-slide-title {
+          min-width: 190px;
+        }
+
+        .skills-story-caption {
+          top: 6.5rem;
+          left: 0.75rem;
+          width: min(48vw, 260px);
+          padding: 0.8rem;
+        }
+
+        .skills-story-caption ol {
+          display: none;
+        }
+
+        .narrative-deck {
+          padding: 3.6rem 0.75rem 7rem;
+        }
+
+        .test-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .test-grid article {
+          min-height: auto;
+        }
+
+        .custom-story-slide {
+          max-height: calc(100dvh - 9rem);
+          overflow-y: auto;
+        }
+      }
+
+      @media screen and (min-width: 600px) {
+        dialog {
+          top: 0%;
+          padding: 2em;
+          left: 50%;
+          transform: translateX(5%);
+          margin-block: auto;
+          margin-inline: unset;
+          margin-right: 1rem;
+          width: 50%;
+          height: fit-content;
+        }
+
+        dialog.modal-visible {
+          top: 0%;
+          transform: translateX(0%);
+        }
+
+        .interaction-area {
+          padding: 0.5em 1em 6em;
+        }
+
+        .actions {
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        }
+
+        .download {
+          grid-column: unset;
+        }
+
+        .carousel-button {
+          grid-row: unset;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TNJ73P37"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div class="lego-loader" role="status" aria-label="Loading the LEGO story">
+      <div class="loader-bricks" aria-hidden="true">
+        <span class="loader-brick"></span>
+        <span class="loader-brick"></span>
+        <span class="loader-brick"></span>
+      </div>
+      <p>Building the story…</p>
+    </div>
+    <svg class="legacy-initials" viewBox="0 0 100 100" aria-hidden="true">
+      <defs>
+        <text
+          id="letters"
+          x="50"
+          y="50"
+          font-size="100"
+          font-weight="bold"
+          text-anchor="middle"
+          dominant-baseline="middle"
+        >
+          jd
+        </text>
+        <clipPath id="wave">
+          <path
+            d="M0 201H5.3c5.4 0 16 0 26.9 0 10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 32.2 0s21.3 0 32 0 21.3 0 32.2 0c10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 32.2 0s21.3 0 32 0 21.3 0 32.2 0c10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 32.2 0s21.3 0 32 0 21.3 0 32.2 0c10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 32.2 0s21.3 0 32 0 21.3 0 32.2 0c10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 32.2 0s21.3 0 32 0 21.3 0 32.2 0c10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 32.2 0s21.3 0 32 0 21.3 0 32.2 0c10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 32.2 0s21.3 0 32 0 21.3 0 32.2 0c10.8 0 21.8 0 32.6 0 10.9 0 21.5 0 26.9 0h5.3V116l-5.3-5.8c-5.4-5.9-16-17.5-26.9-21.5-10.8-4-21.8-.4-32.6.5-10.9.8-21.5-1.2-32.2-1.5-10.7-.4-21.3 1-32 3.8s-21.3 7.2-32.2 9.5c-10.8 2.3-21.8 2.7-32.6-.2C795.3 98 784.7 92 774 94s-21.3 12-32 14.5-21.3-2.5-32.2-5.8c-10.8-3.4-21.8-5-32.6-5.9-10.9-.8-21.5-.8-32.2 1.4-10.7 2.1-21.3 6.5-32 4.3s-21.3-10.8-32.2-15.2C570 83 559 83 548.2 87.3c-10.9 4.4-21.5 13-32.2 18.4-10.7 5.3-21.3 7.3-32 3.3s-21.3-14-32.2-16.5C441 90 430 95 419.2 96.5c-10.9 1.5-21.5-.5-32.2-1s-21.3.5-32-1.2c-10.7-1.6-21.3-6-32.2-6.8-10.8-.8-21.8 1.8-32.6 5.3-10.9 3.5-21.5 7.9-32.2 9-10.7 1.2-21.3-.8-32-3.1-10.7-2.4-21.3-5-32.2-3.9-10.8 1.2-21.8 6.2-32.6 8.9-10.9 2.6-21.5 3-32.2-.4C118.3 100 107.7 93 97 92s-21.3 4-32.2 6.7c-10.8 2.6-21.8 3-32.6 3.6-10.9.7-21.5 1.7-26.9 2.2L0 105Z"
+          />
+        </clipPath>
+      </defs>
+      <use class="background-letters" href="#letters" />
+      <use class="foreground-letters" href="#letters" clip-path="url(#wave)" />
+    </svg>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
