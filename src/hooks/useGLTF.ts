@@ -5,17 +5,16 @@ import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { WebGLRenderer } from "three";
 
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath("/draco/");
+dracoLoader.setDecoderPath(`${import.meta.env.BASE_URL}draco/`);
 dracoLoader.preload();
 
 const ktx2Loader = new KTX2Loader();
-ktx2Loader.setTranscoderPath("/basis/");
+ktx2Loader.setTranscoderPath(`${import.meta.env.BASE_URL}basis/`);
 
 const extensions = (renderer: WebGLRenderer) => (loader: GLTFLoader) => {
   loader.setDRACOLoader(dracoLoader);
   loader.setKTX2Loader(ktx2Loader.detectSupport(renderer));
 };
-``;
 
 const useGLTF = <T extends Partial<ObjectMap> = Partial<ObjectMap>>(path: string): GLTF & T => {
   const { gl } = useThree();
