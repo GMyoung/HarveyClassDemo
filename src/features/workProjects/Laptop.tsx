@@ -9,7 +9,7 @@ import {
   TextureLoader,
   Vector3,
 } from "three";
-import { useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useGLTF, useTargetFocusedPosition, useToggleAnimationState, useWiggle } from "@/hooks";
 import { getAssetUrl, hoverHandlers, brickHeight, studDepth } from "@/util";
 import { useRotatingDisplayContext } from "@/contexts/RotatingDisplay";
@@ -44,8 +44,9 @@ export function Laptop({
   position: "left" | "right" | "center";
 }) {
   const { width } = useRotatingDisplayContext();
-  const { open } = useModalContext();
-  const wiggle = useWiggle({ amplitude: 0.1, frequency: 2, verticalShift: -0.1 });
+  const { activeKey, open } = useModalContext();
+  const floatPhase = position === "left" ? 0 : position === "center" ? 1.7 : 3.4;
+  const wiggle = useWiggle({ amplitude: 0.12, frequency: 1.8, phaseShift: floatPhase });
 
   const laptop = useRef<Mesh>(null!);
   const screenTexture = useLoader(TextureLoader, getAssetUrl(screen, ".png"));
@@ -53,31 +54,32 @@ export function Laptop({
   screenTexture.flipY = false;
   const { nodes, materials } = useGLTF<LaptopGraph>(laptopModelPath);
 
-  const [isFocused, setIsFocused] = useState(false);
+  const isFocused = activeKey === screen;
 
   const length = Math.max(width, MIN_OBJECT_CLEARANCE);
   const spacing = Math.max(MIN_OBJECT_CLEARANCE, width / 2 - 0.5);
   const transforms = getTransforms(length, spacing)[position];
-  const focusedPosition = useTargetFocusedPosition(0.85);
-  const { x, y, z } = focusedPosition;
-  focusedPosition.set(z, y, x);
+  const rawFocusedPosition = useTargetFocusedPosition(0.85);
+  const focusedPosition = useMemo(
+    () => new Vector3(rawFocusedPosition.z, rawFocusedPosition.y, rawFocusedPosition.x),
+    [rawFocusedPosition.x, rawFocusedPosition.y, rawFocusedPosition.z],
+  );
 
   const parentMatrix = new Matrix4();
   const targetPosition = new Vector3();
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    setIsFocused((f) => !f);
-    open(screen, () => setIsFocused(false));
+    open(screen);
   };
-
-  const handleMiss = () => setIsFocused(false);
 
   useToggleAnimationState(isFocused, (alpha) => {
     parentMatrix.copy(laptop.current.parent!.matrixWorld).invert();
     targetPosition.copy(focusedPosition).applyMatrix4(parentMatrix);
     laptop.current.position.lerpVectors(laptopOrigin, targetPosition, alpha);
-    laptop.current.position.y += wiggle() * alpha;
+    const idleFloat = wiggle({ amplitude: 0.11, frequency: 1.6 });
+    const focusedFloat = wiggle({ amplitude: 0.18, frequency: 2.1, verticalShift: -0.04 });
+    laptop.current.position.y += MathUtils.lerp(idleFloat, focusedFloat, alpha);
     if (!isFocused) {
       const heightAmplitude = 2;
       laptop.current.position.y += heightAmplitude * Math.sin(MathUtils.lerp(0, Math.PI, alpha));
@@ -93,7 +95,6 @@ export function Laptop({
       dispose={null}
       {...transforms}
       onClick={handleClick}
-      onPointerMissed={handleMiss}
     >
       <ClickIndicator position={[0, 2.75, 0]} />
       <mesh ref={laptop} geometry={nodes.laptop.geometry}>

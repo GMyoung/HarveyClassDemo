@@ -268,10 +268,10 @@ export const Hero = ({
   return (
     <group {...props} ref={crew} position={[5.6, 0, 5.6]} rotation-y={Math.PI / 4}>
       <CrewMember name="Harvey Yang" labelOffsetY={0.5} model="Junior" shirt="#f2cc3d" trousers="#15191b" position={[0, 0, 0]} phase={0} revealed={visibleCount >= 1} charlieBrownShirt />
-      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" shirt="#7448c8" trousers="#1f4f9b" position={[-2.3, 0, 0]} phase={0.8} revealed={visibleCount >= 2} />
-      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" shirt="#174a32" trousers="#15191b" position={[-1.15, 0, 0]} phase={1.6} revealed={visibleCount >= 3} />
-      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" shirt="#b7a276" trousers="#34383b" position={[1.15, 0, 0]} phase={2.4} revealed={visibleCount >= 4} />
-      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" shirt="#9bcb7b" trousers="#f4f2ea" position={[2.3, 0, 0]} phase={3.2} revealed={visibleCount >= 5} />
+      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" shirt="#ac91de" trousers="#7995c3" position={[-3.1, 0, 0]} phase={0.8} revealed={visibleCount >= 2} />
+      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" shirt="#174a32" trousers="#15191b" position={[-1.55, 0, 0]} phase={1.6} revealed={visibleCount >= 3} />
+      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" shirt="#b7a276" trousers="#34383b" position={[1.55, 0, 0]} phase={2.4} revealed={visibleCount >= 4} />
+      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" shirt="#9bcb7b" trousers="#f4f2ea" position={[3.1, 0, 0]} phase={3.2} revealed={visibleCount >= 5} />
     </group>
   );
 };
