@@ -447,6 +447,39 @@
         letter-spacing: -0.03em;
       }
 
+      .team-qr-entry {
+        position: absolute;
+        z-index: 3;
+        top: clamp(1rem, 4vh, 2rem);
+        left: 50%;
+        width: min(38vw, 285px);
+        padding: 0.7rem;
+        transform: translateX(-50%);
+        color: #ffcf00;
+        background: rgba(12, 13, 16, 0.96);
+        border: 4px solid #e2231a;
+        border-radius: 16px;
+        box-shadow: 8px 8px 0 rgba(255, 207, 0, 0.96), 0 18px 42px rgba(0, 0, 0, 0.32);
+        pointer-events: none;
+        animation: deck-enter 240ms var(--ease-out) both;
+      }
+
+      .team-qr-entry img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        background: white;
+      }
+
+      .team-qr-entry span {
+        display: block;
+        padding-top: 0.65rem;
+        text-align: center;
+        font: 900 0.72rem/1 monospace;
+        letter-spacing: 0.12em;
+      }
+
       .skills-story-caption__top {
         display: flex;
         justify-content: space-between;
@@ -939,6 +972,10 @@
       @media screen and (max-width: 700px) {
         .hero-slide-title {
           min-width: 190px;
+        }
+
+        .team-qr-entry {
+          width: min(64vw, 250px);
         }
 
         .skills-story-caption {
