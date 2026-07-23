@@ -10,7 +10,8 @@
   background:
     radial-gradient(circle at 50% 38%, rgba(18, 61, 92, 0.9), transparent 44%),
     linear-gradient(145deg, #02050a 0%, #071521 54%, #03070d 100%);
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   overflow: hidden;
   isolation: isolate;
 }
@@ -206,31 +207,8 @@
 .finale-roll-thanks { min-height: clamp(300px, 48vh, 450px); }
 .finale-roll-thanks h2 { color: #ffcf00; font-size: calc(clamp(3rem, 8vw, 7.2rem) + var(--font-boost)); }
 
-.finale-click-surface {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  color: transparent;
-  background: transparent;
-  box-shadow: none;
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.finale-click-surface:hover,
-.finale-click-surface:active,
-.finale-click-surface:focus {
-  background: transparent;
-  box-shadow: none;
-  transform: none;
-}
-
-.finale-click-surface:focus-visible { outline: 3px solid #ffcf00; outline-offset: -8px; }
+.finale-credits:focus { outline: none; }
+.finale-credits:focus-visible { outline: 3px solid #ffcf00; outline-offset: -8px; }
 .finale-credits[data-state="returning"] { animation: finale-return-home 1.1s ease-in both; }
 
 @keyframes finale-glow {

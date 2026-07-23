@@ -144,7 +144,16 @@ export const FinaleCredits = () => {
       ref={rootRef}
       className={`finale-credits${isLocalBarePreview ? " finale-credits--bare" : ""}`}
       data-state={state}
-      aria-label="LEGO story journey rolling credits"
+      data-deck-interactive
+      role="button"
+      tabIndex={0}
+      aria-label={isPlaying ? "End credits and return to the beginning" : "Start rolling credits"}
+      onClick={toggleCredits}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        toggleCredits();
+      }}
     >
       <div className="finale-backdrop" aria-hidden="true">
         <div className="finale-backdrop__glow" />
@@ -218,13 +227,6 @@ export const FinaleCredits = () => {
         </div>
       </div>
 
-      <button
-        type="button"
-        className="finale-click-surface"
-        data-deck-interactive
-        aria-label={isPlaying ? "End credits and return to the beginning" : "Start rolling credits"}
-        onClick={toggleCredits}
-      />
     </section>
   );
 };
