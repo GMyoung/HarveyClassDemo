@@ -676,6 +676,18 @@
         to { opacity: 1; transform: translateY(0) scale(1); }
       }
 
+      @keyframes deck-enter-short {
+        from { opacity: 0; transform: translateY(12px) scale(0.79); }
+        to { opacity: 1; transform: translateY(0) scale(0.8); }
+      }
+
+      @media screen and (max-height: 760px) and (min-width: 701px) {
+        .custom-story-slide {
+          width: min(112vw, 1280px);
+          animation-name: deck-enter-short;
+        }
+      }
+
       .actions button:disabled.download {
         opacity: 0.5;
       }

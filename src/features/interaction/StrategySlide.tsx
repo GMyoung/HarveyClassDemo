@@ -2,7 +2,14 @@ import type { CSSProperties, ReactNode } from "react";
 import ninjago from "@/assets/case_ninjago.jpeg?url";
 import legoMovie from "@/assets/case_lego_movie.jpeg?url";
 import legoFortnite from "@/assets/case_lego_fortnite.jpeg?url";
+import legoFortnitePhysical from "@/assets/lego_fortnite.png?url";
+import storyStarWars from "@/assets/story_star_wars.png?url";
+import ninjagoAnniversaryVideo from "@/assets/story_ninjago_anniversary.mp4?url";
+import fortniteKeyArt from "@/assets/story_fortnite_key_art.jpg?url";
+import fortniteFrame14 from "@/assets/story_fortnite_frame_14.jpg?url";
+import fortniteFrame31 from "@/assets/story_fortnite_frame_31.jpg?url";
 import { StoryMotion } from "./StoryMotion";
+import { StoryImage, StorySlideshow, StoryVideo } from "./StoryMedia";
 
 type StrategySlideProps = { slideIndex: number };
 type Tone = "yellow" | "red" | "blue" | "green" | "purple" | "dark";
@@ -41,6 +48,35 @@ const SlideShell = ({ slideIndex, eyebrow, title, lead, tone = "yellow", source,
   </section>
 );
 
+type PersonCardProps = {
+  year: string;
+  name: string;
+  role: string;
+  decision: string;
+};
+
+const PersonCard = ({ year, name, role, decision }: PersonCardProps) => (
+  <article className="person-card">
+    <span>{year}</span>
+    <div>
+      <h3>{name}</h3>
+      <small>{role}</small>
+    </div>
+    <p>{decision}</p>
+  </article>
+);
+
+const MiniSilhouette = ({ kind }: { kind: "brick" | "extra" | "modern" }) => (
+  <div className={`mini-silhouette mini-silhouette--${kind}`} aria-hidden="true">
+    <span className="mini-silhouette__head" />
+    <span className="mini-silhouette__body" />
+    <i className="mini-silhouette__arm mini-silhouette__arm--left" />
+    <i className="mini-silhouette__arm mini-silhouette__arm--right" />
+    <b className="mini-silhouette__leg mini-silhouette__leg--left" />
+    <b className="mini-silhouette__leg mini-silhouette__leg--right" />
+  </div>
+);
+
 const OriginalAdvantage = () => {
   const milestones = [
     ["1932", "Toy company"], ["1958", "Compatible brick system"],
@@ -62,70 +98,134 @@ const OriginalAdvantage = () => {
 };
 
 const MinifigureStory = () => {
-  const steps = [
-    ["01", "PHYSICAL BRICKS"], ["02", "LOCATIONS & VEHICLES"],
-    ["03", "MINIFIGURE ROLES"], ["04", "CHARACTERS & WORLDS"],
-    ["05", "RULES & CONFLICT"], ["06", "CONTINUING STORIES"],
+  const figures: ["brick" | "extra" | "modern", string, string][] = [
+    ["brick", "1974", "A brick-built figure"],
+    ["extra", "1975", "A fixed stage extra"],
+    ["modern", "1978", "A character with a role"],
   ];
   return (
-    <SlideShell slideIndex={4} eyebrow="THE STORY PRIMITIVE" title="Minifigures turned construction into storytelling." lead="Before LEGO entered entertainment, the brick system already contained the same primitives used by film, television, and games." tone="red">
-      <div className="story-primitive-flow" role="list">
-        {steps.map(([number, label], index) => (
-          <article key={number} role="listitem" style={enterStyle(index + 1)}><span>{number}</span><strong>{label}</strong></article>
-        ))}
+    <SlideShell slideIndex={4} eyebrow="1978 · THE CHARACTER ARRIVES" title="The designer who gave bricks a face." lead="Jens N. Knudsen did not add decoration. He gave children a character who could enter any build and become anyone." tone="red" source="Sources: The LEGO Group History · ‘Role play’ and ‘The minifigure timeline’; Jens N. Knudsen worked at LEGO, 1968–2000.">
+      <div className="minifigure-documentary">
+        <div className="documentary-copy" style={enterStyle(1)}>
+          <PersonCard year="32 YEARS" name="Jens N. Knudsen" role="LEGO designer · 1968–2000" decision="Make one small, articulated character neutral enough to play every role." />
+          <div className="story-beat-row" role="list">
+            {[["BUILDINGS", "needed inhabitants"], ["CHARACTERS", "created identity"], ["STORIES", "made worlds repeatable"]].map(([title, copy], index) => (
+              <article role="listitem" key={title} style={enterStyle(index + 2)}><span>0{index + 1}</span><strong>{title}</strong><small>{copy}</small></article>
+            ))}
+          </div>
+        </div>
+        <div className="minifigure-evolution" role="list" aria-label="Evolution of the LEGO figure">
+          {figures.map(([kind, year, label], index) => (
+            <article key={year} role="listitem" className={kind === "modern" ? "is-breakthrough" : ""} style={enterStyle(index + 2)}>
+              <MiniSilhouette kind={kind} />
+              <strong>{year}</strong><span>{label}</span>
+            </article>
+          ))}
+        </div>
       </div>
-      <div className="primitive-equation" style={enterStyle(7)}><strong>STORY</strong><b>+</b><strong>PLAY</strong><b>=</b><strong>A RENEWABLE WORLD</strong></div>
+      <p className="strategy-thesis" style={enterStyle(5)}>LEGO did not enter entertainment in 1978. It invented the character that made entertainment possible.</p>
     </SlideShell>
   );
 };
 
 const LicensedWorlds = () => {
   const stages = [
-    ["EXTERNAL IP", "Borrow recognition"], ["LEGO TRANSLATION", "Apply visual and play grammar"],
-    ["BUILD · BREAK · REMIX", "Give fans agency"], ["SETS & COLLECTORS", "Return demand to bricks"],
+    ["LATE 1997", "Peter Eio proposes Lucasfilm"],
+    ["6 MONTHS", "Internal debate tests brand fit"],
+    ["1998", "LEGO signs its first IP licence"],
+    ["1999", "LEGO Star Wars launches"],
   ];
   return (
-    <SlideShell slideIndex={5} eyebrow="LEARNING THROUGH PARTNERSHIP" title="Licensed worlds taught LEGO to translate fandom into buildable play." lead="Star Wars proved the capability was not copying outside IP—it was converting a story into LEGO-shaped participation." tone="blue">
-      <div className="translation-flow">
-        {stages.map(([title, copy], index) => (
-          <article key={title} style={enterStyle(index + 1)}><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>
-        ))}
+    <SlideShell slideIndex={5} eyebrow="1997–1999 · THE FIRST LICENCE" title="The bet that broke LEGO's purist rule." lead="For the first time, LEGO would borrow another company's story—and translate it into its own system of play." tone="blue" source="Sources: The LEGO Group, ‘LEGO Star Wars celebrates 25 years’ (2024); Peter Eio’s account of the 1997 proposal and internal debate.">
+      <div className="documentary-layout">
+        <StoryImage src={storyStarWars} alt="LEGO Star Wars Millennium Falcon set with minifigures" contain credit={{ label: "The LEGO Group · LEGO Star Wars 25th Anniversary", year: "2024" }} />
+        <div className="documentary-copy">
+          <PersonCard year="LATE 1997" name="Peter Eio" role="President · LEGO Americas" decision="Propose a partnership with Lucasfilm—even though LEGO had never licensed an outside story." />
+          <div className="decision-chain" role="list">
+            {stages.map(([year, copy], index) => (
+              <article role="listitem" key={year} style={enterStyle(index + 2)}><span>{year}</span><p>{copy}</p></article>
+            ))}
+          </div>
+        </div>
       </div>
-      <p className="strategy-thesis" style={enterStyle(5)}>Borrowed reach became a training ground for LEGO's own world-to-product capability.</p>
+      <p className="strategy-thesis" style={enterStyle(6)}>The result was more than a hit licence: LEGO learned how to turn fandom into buildable participation.</p>
     </SlideShell>
   );
 };
 
 const Crisis = () => (
-  <SlideShell slideIndex={6} eyebrow="THE 2004 COMPLEXITY TRAP" title="The crisis exposed the cost of expansion without core fit." lead="The lesson is not “avoid entertainment.” It is “do not let complexity outrun capability.”" tone="red" source="Source: The LEGO Group Annual Report 2004. Causality is interpreted cautiously.">
-    <div className="crisis-layout">
-      <div className="metric-pair" style={enterStyle(1)}>
-        <article><strong>DKK 6.704B</strong><span>2004 REVENUE</span></article>
-        <article><strong>−DKK 1.931B</strong><span>2004 NET LOSS</span></article>
+  <SlideShell slideIndex={6} eyebrow="2004 · THE COMPLEXITY TRAP" title="The year LEGO had to choose." lead="Expansion had created reach—but also too many products, activities, and capabilities for one company to control." tone="red" source="Sources: The LEGO Group Annual Reports 2004–2005. 2005 profit includes effects from restructuring and asset transactions.">
+    <div className="crisis-story-layout">
+      <div className="annual-report-card" style={enterStyle(1)}>
+        <span>THE LEGO GROUP · 2004</span>
+        <strong>−DKK 1.9B</strong>
+        <p>NET LOSS</p>
+        <small>Revenue: DKK 6.7B</small>
       </div>
-      <div className="crisis-response" style={enterStyle(2)}>
-        <p>THE RESPONSE</p>
-        <ul><li>Separate non-core, capital-intensive businesses.</li><li>Transfer game-platform execution to licensing partners.</li><li>Reduce product complexity and rebuild capital discipline.</li></ul>
+      <div className="leadership-handoff" style={enterStyle(2)}>
+        <PersonCard year="1979–2004" name="Kjeld Kirk Kristiansen" role="CEO · 25 years" decision="Hands operational leadership to a new generation after the deepest crisis in company history." />
+        <i aria-hidden="true">→</i>
+        <PersonCard year="2004" name="Jørgen Vig Knudstorp" role="Joined LEGO 2001 · CEO at 35" decision="Refocus the portfolio, release capital, and rebuild around the profitable core." />
       </div>
     </div>
-    <aside className="causality-note" style={enterStyle(3)}><strong>CAUSALITY BOUNDARY</strong><span>Entertainment alone did not cause the crisis. Uncontrolled complexity did.</span></aside>
+    <div className="turnaround-actions" style={enterStyle(3)}>
+      <strong>THE PLAN</strong><span>Cut complexity</span><span>Sell capital-heavy assets</span><span>Partner for specialist execution</span><b>2005: +DKK 702M PRE-TAX PROFIT</b>
+    </div>
+    <aside className="causality-note" style={enterStyle(4)}><strong>THE LESSON</strong><span>Entertainment was not the problem. Expansion without a clear return to the core was.</span></aside>
   </SlideShell>
 );
 
-type CaseVisualProps = {
-  slideIndex: number; eyebrow: string; title: string; lead: string; image: string;
-  imageAlt: string; tone: Tone; stats: [string, string][]; points: string[]; source: string;
-};
+const StoryStat = ({ value, label }: { value: string; label: string }) => <article className="story-stat"><strong>{value}</strong><span>{label}</span></article>;
 
-const CaseVisual = ({ slideIndex, eyebrow, title, lead, image, imageAlt, tone, stats, points, source }: CaseVisualProps) => (
-  <SlideShell slideIndex={slideIndex} eyebrow={eyebrow} title={title} lead={lead} tone={tone} source={source}>
-    <div className="case-study-layout">
-      <figure className="case-study-visual" style={enterStyle(1)}><img src={image} alt={imageAlt} /><figcaption>SCREEN → STORY → BUILD</figcaption></figure>
-      <div className="case-study-content">
-        <div className="case-stats">
-          {stats.map(([value, label], index) => <article key={label} style={enterStyle(index + 2)}><strong>{value}</strong><span>{label}</span></article>)}
+const NinjagoStory = () => (
+  <SlideShell slideIndex={7} eyebrow="2011 · FROM BORROWED TO OWNED" title="NINJAGO turned a toy line into a story world." lead="LEGO applied what licensing had taught it—then built characters, lore, and continuity it could own." tone="red" source="Source: The LEGO Group, NINJAGO 15th Anniversary media release and official footage (2026).">
+    <div className="documentary-layout">
+      <StoryVideo src={ninjagoAnniversaryVideo} poster={ninjago} alt="Official LEGO NINJAGO 15th anniversary footage" startAt={2} endAt={9} credit={{ label: "The LEGO Group · NINJAGO 15th Anniversary", year: "2026" }} />
+      <div className="documentary-copy">
+        <PersonCard year="18 MONTHS" name="Tommy Andreasen + team" role="LEGO creative development" decision="Research enduring play patterns, then combine ninja, elemental powers, vehicles, and serialized conflict." />
+        <PersonCard year="2011" name="Dan + Kevin Hageman" role="Series developers and head writers" decision="Give the product idea a continuing mythology children could return to between builds." />
+        <div className="documentary-stats"><StoryStat value="500+" label="SETS" /><StoryStat value="200+" label="EPISODES" /><StoryStat value="15 YEARS" label="OWNED IP" /></div>
+      </div>
+    </div>
+    <p className="strategy-thesis" style={enterStyle(4)}>Star Wars taught translation. NINJAGO proved LEGO could own the world being translated.</p>
+  </SlideShell>
+);
+
+const MovieStory = () => (
+  <SlideShell slideIndex={8} eyebrow="2008–2014 · BRAND AS STORY" title="The LEGO Movie made the play philosophy the plot." lead="The breakthrough was not placing LEGO in a movie. It was building a movie around the tension between instructions and imagination." tone="yellow" source="Sources: The LEGO Group 2014 Annual Results; LEGO–Universal film partnership announcement (2020). Box office is the combined franchise total reported in 2020.">
+    <div className="documentary-layout documentary-layout--movie">
+      <StoryImage src={legoMovie} alt="Emmet and Wyldstyle in The LEGO Movie" credit={{ label: "Warner Bros. Pictures · The LEGO Movie", year: "2014" }} />
+      <div className="documentary-copy">
+        <div className="decision-chain decision-chain--movie" role="list">
+          <article role="listitem"><span>2008</span><p><b>Dan Lin</b> pitches a theatrical LEGO film.</p></article>
+          <article role="listitem"><span>LEGO</span><p><b>Jill Wilfert + leadership</b> protect brand voice and open-ended play.</p></article>
+          <article role="listitem"><span>2014</span><p><b>Phil Lord + Chris Miller</b> release a story about rebuilding the rules.</p></article>
         </div>
-        <ul className="case-points" style={enterStyle(stats.length + 2)}>{points.map((point) => <li key={point}>{point}</li>)}</ul>
+        <div className="movie-outcome"><StoryStat value="+15%" label="2014 CONSUMER SALES" /><StoryStat value="≈$1.1B" label="FRANCHISE BOX OFFICE BY 2020" /></div>
+        <small className="evidence-caveat">The company named The LEGO Movie a significant contributor—not the only cause—of 2014 growth.</small>
+      </div>
+    </div>
+    <p className="strategy-thesis" style={enterStyle(4)}>The studio made the film. LEGO kept the meaning: anything can be rebuilt.</p>
+  </SlideShell>
+);
+
+const FortniteStory = () => (
+  <SlideShell slideIndex={9} eyebrow="2022–2024 · THE LIVE WORLD" title="LEGO Fortnite turned a campaign into a place." lead="A long-term Epic partnership moved LEGO from scheduled content into a persistent world where players build, explore, and return." tone="purple" source="Sources: Epic Games × LEGO partnership (2022); LEGO Fortnite launch (2023); first physical sets (2024); LEGO Group 2024 Annual Results.">
+    <div className="documentary-layout">
+      <StorySlideshow images={[
+        { src: fortniteKeyArt, alt: "LEGO Fortnite key art" },
+        { src: fortniteFrame14, alt: "Players building in LEGO Fortnite" },
+        { src: fortniteFrame31, alt: "LEGO Fortnite digital world" },
+        { src: legoFortnitePhysical, alt: "LEGO Fortnite physical product range" },
+      ]} credit={{ label: "The LEGO Group × Epic Games · official launch assets", year: "2023–2024" }} />
+      <div className="documentary-copy">
+        <div className="partner-pair">
+          <PersonCard year="2022" name="Niels B. Christiansen" role="CEO · The LEGO Group" decision="Create a safe, long-term digital partnership instead of trying to operate the platform alone." />
+          <span aria-hidden="true">×</span>
+          <PersonCard year="2022" name="Tim Sweeney" role="CEO · Epic Games" decision="Open Fortnite's scale and creation tools to LEGO's play system." />
+        </div>
+        <div className="decision-chain decision-chain--compact"><article><span>DEC 2023</span><p>Free game launches inside Fortnite.</p></article><article><span>OCT 2024</span><p>Digital characters return to shelves as physical sets.</p></article></div>
+        <div className="documentary-stats documentary-stats--fortnite"><StoryStat value="87M+" label="PLAYERS BY END OF 2024" /><StoryStat value="SCREEN → SHELF" label="TWO-WAY VALUE LOOP" /></div>
       </div>
     </div>
   </SlideShell>
@@ -133,17 +233,17 @@ const CaseVisual = ({ slideIndex, eyebrow, title, lead, image, imageAlt, tone, s
 
 const MediaJobs = () => {
   const jobs = [
-    ["FILM", "BURST REACH", "Turns play into culture", "#e2231a"],
-    ["TELEVISION", "CONTINUITY", "Lets characters and worlds compound", "#ffcf00"],
-    ["GAMES", "AGENCY", "Lets players remake the world", "#087bc1"],
-    ["PLATFORMS", "RECURRENCE", "Connects content, community, insight, and products", "#00a651"],
+    ["FILM", "BURST REACH", "Turns play into culture", "#e2231a", legoMovie],
+    ["TELEVISION", "CONTINUITY", "Lets characters and worlds compound", "#ffcf00", ninjago],
+    ["GAMES", "AGENCY", "Lets players remake the world", "#087bc1", legoFortnite],
+    ["PLATFORMS", "RECURRENCE", "Connects content, community, insight, and products", "#00a651", fortniteFrame31],
   ];
   return (
     <SlideShell slideIndex={10} eyebrow="ONE IP SYSTEM · FOUR DISTINCT JOBS" title="The media portfolio works because the roles are complementary." lead="Film creates peaks. Television compounds relationships. Games create agency. Platforms sustain participation." tone="purple">
       <div className="media-jobs" role="list">
-        {jobs.map(([medium, role, copy, color], index) => (
+        {jobs.map(([medium, role, copy, color, image], index) => (
           <article key={medium} role="listitem" style={{ ...enterStyle(index + 1), "--job-color": color } as CSSProperties}>
-            <span>{String(index + 1).padStart(2, "0")}</span><p>{medium}</p><h3>{role}</h3><small>{copy}</small>
+            <img className="media-jobs__thumb" src={image} alt="" /><span>{String(index + 1).padStart(2, "0")}</span><p>{medium}</p><h3>{role}</h3><small>{copy}</small>
           </article>
         ))}
       </div>
@@ -185,17 +285,12 @@ const StrategicOptions = () => {
 };
 
 const Vrio = () => {
-  const rows = [
-    ["System in Play", "✓", "✓", "✓", "✓", "SUSTAINED"], ["Brand + family trust", "✓", "✓", "✓", "✓", "SUSTAINED"],
-    ["Brick / minifigure grammar", "✓", "✓", "✓", "✓", "SUSTAINED"], ["World → play → product", "✓", "✓", "✓", "✓", "SUSTAINED"],
-    ["Film production", "✓", "—", "—", "△", "PARTNER"], ["AAA / platform operations", "✓", "—", "—", "△", "PARTNER"],
-  ];
   return (
     <SlideShell slideIndex={13} eyebrow="VRIO TEST" title="LEGO's durable advantage still comes from the core—not from owning a studio." tone="blue" source="VRIO: Value · Rarity · Inimitability · Organization. Framework: Barney (1991).">
-      <div className="vrio-table-wrap" style={enterStyle(1)}>
-        <table className="vrio-table"><thead><tr><th>RESOURCE / CAPABILITY</th><th>V</th><th>R</th><th>I</th><th>O</th><th>VERDICT</th></tr></thead>
-          <tbody>{rows.map(([resource, ...cells]) => <tr key={resource}><th scope="row">{resource}</th>{cells.map((cell, index) => <td key={`${resource}-${index}`}>{cell}</td>)}</tr>)}</tbody>
-        </table>
+      <div className="capability-ownership" style={enterStyle(1)}>
+        <article className="capability-ownership__control"><span>LEGO MUST CONTROL</span><h3>The architecture of play</h3><ul><li>Brand and family trust</li><li>Brick + minifigure grammar</li><li>World → play → product translation</li><li>Safety, data, and community principles</li></ul><strong>VALUABLE · RARE · HARD TO COPY · ORGANIZED</strong></article>
+        <div className="capability-divider" aria-hidden="true"><b>OWN</b><i>↔</i><b>PARTNER</b></div>
+        <article className="capability-ownership__partner"><span>LEGO SHOULD RENT</span><h3>Specialist execution</h3><ul><li>Feature-film production</li><li>AAA game engineering</li><li>Live-platform operations</li><li>Distribution at global scale</li></ul><strong>VALUABLE · AVAILABLE FROM PARTNERS</strong></article>
       </div>
       <p className="strategy-thesis" style={enterStyle(2)}>Control architecture and translation. Do not vertically integrate every specialist production step.</p>
     </SlideShell>
@@ -214,6 +309,7 @@ const RelatedDiversification = () => (
       <article className="related" style={enterStyle(2)}><span>RELATED</span><h3>Shared resources + product return</h3><p>Stories become sets. Platforms activate physical demand. Insight improves play.</p></article>
       <article className="over-line" style={enterStyle(3)}><span>OVER THE LINE</span><h3>Isolated content bets</h3><p>No shared resources, no buildable translation, and no return to physical play.</p></article>
     </div>
+    <div className="screen-shelf-proof" style={enterStyle(4)}><img src={fortniteKeyArt} alt="LEGO Fortnite digital world" /><span>SCREEN</span><i>→</i><span>SHELF</span><img src={legoFortnitePhysical} alt="LEGO Fortnite physical sets" /></div>
   </SlideShell>
 );
 
@@ -223,14 +319,18 @@ const Recommendation = () => (
       <article style={enterStyle(1)}><span>OWN MORE WORLDS</span><ul><li>Build owned characters and story universes.</li><li>Create persistent digital spaces and communities.</li><li>Back projects that generate sets, repeat play, and new mechanics.</li></ul></article>
       <article style={enterStyle(2)}><span>OWN FEWER STUDIOS</span><ul><li>Partner for film, AAA games, and platform operations.</li><li>Retain brand, play principles, data, and child-safety control.</li><li>Require every project to return value to physical play.</li></ul></article>
     </div>
-    <div className="recommendation-verdict" style={enterStyle(3)}><strong>PARTNER FOR PRODUCTION.</strong><strong>CONTROL THE PLAY SYSTEM.</strong></div>
+    <div className="partner-chip-row" style={enterStyle(3)}><span>LUCASFILM</span><span>FILM STUDIOS</span><span>EPIC GAMES</span><strong>LEGO CONTROLS THE PLAY SYSTEM</strong></div>
+    <div className="recommendation-verdict" style={enterStyle(4)}><strong>PARTNER FOR PRODUCTION.</strong><strong>CONTROL THE PLAY SYSTEM.</strong></div>
   </SlideShell>
 );
 
 const LastBrick = () => (
   <SlideShell slideIndex={16} eyebrow="THE LAST BRICK" title="LEGO's future is not to become an entertainment conglomerate." tone="dark">
-    <div className="last-brick-statement" style={enterStyle(1)}><span>OWN MORE WORLDS</span><b>+</b><span>PARTNER FOR PRODUCTION</span><b>+</b><span>CONTROL THE PLAY SYSTEM</span></div>
-    <p className="last-brick-test" style={enterStyle(2)}>The test: will the next entertainment investment make a physical brick more valuable?</p>
+    <div className="last-brick-system" style={enterStyle(1)}>
+      <div className="last-brick-core"><i /><i /><i /><i /><strong>THE BRICK</strong><span>CORE SYSTEM</span></div>
+      <span className="orbit-chip orbit-chip--one">CHARACTERS</span><span className="orbit-chip orbit-chip--two">LICENSED STORIES</span><span className="orbit-chip orbit-chip--three">OWNED WORLDS</span><span className="orbit-chip orbit-chip--four">LIVE PLATFORMS</span>
+    </div>
+    <p className="last-brick-test" style={enterStyle(2)}>One final test: will the next entertainment investment make a physical brick more valuable?</p>
   </SlideShell>
 );
 
@@ -240,9 +340,9 @@ export const StrategySlide = ({ slideIndex }: StrategySlideProps) => {
     case 4: return <MinifigureStory />;
     case 5: return <LicensedWorlds />;
     case 6: return <Crisis />;
-    case 7: return <CaseVisual slideIndex={7} eyebrow="TELEVISION · OWNED IP" title="NINJAGO turned product characters into a renewable story world." lead="Television became the operating rhythm for heroes, villains, vehicles, locations, and recurring set demand." image={ninjago} imageAlt="LEGO NINJAGO characters and sets" tone="red" stats={[["500+", "SETS"], ["200+", "EPISODES"], ["15 YEARS", "OWNED IP"]]} points={["Continuity compounds character value.", "Every season introduces buildable conflict.", "Stories return attention to physical play."]} source="Source: LEGO NINJAGO 15th Anniversary announcement (2026)." />;
-    case 8: return <CaseVisual slideIndex={8} eyebrow="FILM · BRAND MEANING" title="The LEGO Movie made LEGO's play philosophy the story." lead="Film translated rebuilding, rule-breaking, and open-ended imagination into mass culture." image={legoMovie} imageAlt="The LEGO Movie characters" tone="yellow" stats={[["≈ $1.1B", "LEGO FILM BOX OFFICE BY 2020"]]} points={["Everything can be rebuilt and recombined.", "Instructions guide—but do not limit—imagination.", "LEGO should own the voice while studios absorb production risk."]} source="Source: Universal Pictures and LEGO Group partnership announcement (2020)." />;
-    case 9: return <CaseVisual slideIndex={9} eyebrow="DIGITAL PLATFORMS · RECURRENCE" title="LEGO Fortnite turned one-off content into a persistent relationship." lead="Live worlds turn audiences into participants—and turn digital characters, places, and mechanics into physical opportunities." image={legoFortnite} imageAlt="LEGO Fortnite world and characters" tone="purple" stats={[["ON SCREEN", "OPEN WORLDS · LIVE UPDATES"], ["OFF SCREEN", "SETS · REWARDS · NEW PLAY"]]} points={["Players build, explore, create, and return.", "Digital behavior reveals new product ideas.", "The strongest platform loop travels in both directions."]} source="Sources: LEGO Fortnite releases (2023–2025); LEGO Group Annual Report 2025." />;
+    case 7: return <NinjagoStory />;
+    case 8: return <MovieStory />;
+    case 9: return <FortniteStory />;
     case 10: return <MediaJobs />;
     case 11: return <Ecosystem />;
     case 12: return <StrategicOptions />;
