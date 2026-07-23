@@ -10,6 +10,10 @@ An interactive, remote-friendly LEGO entertainment strategy presentation by Harv
 - NINJAGO, The LEGO Movie, and LEGO Fortnite use individual supporting visuals extracted from the supplied presentation.
 - Every story step includes a transparent, page-entry SVG motion cue powered by [AnimateIcons](https://github.com/Avijit07x/animateicons). Motion is short-lived and respects reduced-motion preferences.
 
+## Temporary hero calibration panel
+
+After the first presentation click, page 1 shows a compact **Crew tuner**. It can adjust the XYZ position of all five crew members and the XYZ position, Y rotation, and scale of each hairstyle. Values are saved only in this browser under `lego-hero-calibration-v3`; **Copy JSON** exports the complete result to send back for source-code calibration. Panel interactions never advance the presentation, and the panel will be removed after the final values are confirmed.
+
 ## Run locally
 
 ```bash
@@ -28,7 +32,7 @@ pnpm preview
 
 ```bash
 pnpm build
-npx eslint src/features/hero/index.tsx src/features/interaction/StoryMotion.tsx src/features/interaction/StrategySlide.tsx src/features/interaction/NarrativeDeck.tsx src/features/interaction/InteractionArea.tsx src/features/workProjects/Laptop.tsx
+npx eslint src/features/hero/index.tsx src/features/hero/heroCalibrationState.ts src/features/hero/HeroCalibrationProvider.tsx src/features/hero/HeroCalibrationPanel.tsx src/features/interaction/StoryMotion.tsx src/features/interaction/StrategySlide.tsx src/features/interaction/NarrativeDeck.tsx src/features/interaction/InteractionArea.tsx src/features/workProjects/Laptop.tsx
 ```
 
 The production site is deployed to GitHub Pages from `.github/workflows/deploy.yml`.

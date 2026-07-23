@@ -1,4 +1,5 @@
 import { useSectionsContext } from "@/contexts/Sections";
+import { HeroCalibrationPanel } from "@/features/hero/HeroCalibrationPanel";
 import { StoryMotion } from "./StoryMotion";
 import { StrategySlide } from "./StrategySlide";
 import "./StrategySlide.css";
@@ -70,6 +71,7 @@ export const NarrativeDeck = () => {
           <span>01</span>
           <strong>MEET THE<br />CREW</strong>
         </div>
+        <HeroCalibrationPanel />
         {hasEntered && <StoryMotion slideIndex={0} placement="overlay" />}
       </>
     );

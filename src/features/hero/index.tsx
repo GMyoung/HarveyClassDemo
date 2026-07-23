@@ -17,7 +17,9 @@ import { getAssetUrl } from "@/util";
 import {
   HAIR_TRANSFORMS,
   type CrewHair,
+  type HairTransform,
 } from "./hairCalibration";
+import { useHeroCalibration } from "./heroCalibrationState";
 
 type CrewModel = "Intern" | "Junior";
 
@@ -33,6 +35,7 @@ type CrewMemberProps = {
   charlieBrownShirt?: boolean;
   hair?: CrewHair;
   hairColor?: string;
+  hairTransform?: HairTransform;
   showNamePlate?: boolean;
 };
 
@@ -60,7 +63,15 @@ const createClothingMaterial = (color: string) =>
     clearcoatRoughness: 0.38,
   });
 
-const Hairpiece = ({ style, color }: { style: CrewHair; color: string }) => {
+const Hairpiece = ({
+  style,
+  color,
+  transform = HAIR_TRANSFORMS[style],
+}: {
+  style: CrewHair;
+  color: string;
+  transform?: HairTransform;
+}) => {
   const gltf = useGLTF<CrewGLTF>(getAssetUrl(style));
   const material = useMemo(
     () =>
@@ -83,8 +94,6 @@ const Hairpiece = ({ style, color }: { style: CrewHair; color: string }) => {
     });
     return clonedScene;
   }, [gltf.scene, material]);
-  const transform = HAIR_TRANSFORMS[style];
-
   return (
     <primitive
       object={hair}
@@ -176,6 +185,7 @@ export const CrewMember = ({
   charlieBrownShirt = false,
   hair,
   hairColor = "#21140f",
+  hairTransform,
   showNamePlate = true,
 }: CrewMemberProps) => {
   const member = useRef<Group>(null!);
@@ -210,7 +220,7 @@ export const CrewMember = ({
   useFrame(({ clock }, delta) => {
     const elapsed = clock.getElapsedTime();
     const targetY =
-      position[1] + Math.sin(elapsed * 1.35 + phase) * 0.04 + (revealed ? 0 : -3.5);
+      Math.sin(elapsed * 1.35 + phase) * 0.04 + (revealed ? 0 : -3.5);
     member.current.position.y = MathUtils.damp(member.current.position.y, targetY, 6, delta);
     const targetScale = revealed ? 1.12 : 1.04;
     const scale = MathUtils.damp(member.current.scale.x, targetScale, 8, delta);
@@ -224,15 +234,17 @@ export const CrewMember = ({
   });
 
   return (
-    <group ref={member} position={[position[0], position[1] - 3.5, position[2]]} scale={1.04} dispose={null}>
-      <primitive object={scene} />
-      <mesh geometry={standingLegGeometry} material={trousersMaterial} position={[-0.24, 0.45, -0.75]} castShadow receiveShadow />
-      <mesh geometry={standingLegGeometry} material={trousersMaterial} position={[0.24, 0.45, -0.75]} castShadow receiveShadow />
-      <StandingArm side={-1} material={shirtMaterial} />
-      <StandingArm side={1} material={shirtMaterial} />
-      {hair && <Hairpiece style={hair} color={hairColor} />}
-      {charlieBrownShirt && <CharlieBrownStripe />}
-      {revealed && showNamePlate && <NamePlate name={name} offsetY={labelOffsetY} />}
+    <group position={position} dispose={null}>
+      <group ref={member} position={[0, -3.5, 0]} scale={1.04}>
+        <primitive object={scene} />
+        <mesh geometry={standingLegGeometry} material={trousersMaterial} position={[-0.24, 0.45, -0.75]} castShadow receiveShadow />
+        <mesh geometry={standingLegGeometry} material={trousersMaterial} position={[0.24, 0.45, -0.75]} castShadow receiveShadow />
+        <StandingArm side={-1} material={shirtMaterial} />
+        <StandingArm side={1} material={shirtMaterial} />
+        {hair && <Hairpiece style={hair} color={hairColor} transform={hairTransform} />}
+        {charlieBrownShirt && <CharlieBrownStripe />}
+        {revealed && showNamePlate && <NamePlate name={name} offsetY={labelOffsetY} />}
+      </group>
     </group>
   );
 };
@@ -243,6 +255,7 @@ export const Hero = ({
 }: ThreeElements["group"] & { ref: RefObject<AnimationHandle> }) => {
   const crew = useRef<Group>(null!);
   const { slideIndex, hasEntered } = useSectionsContext();
+  const { calibration } = useHeroCalibration();
   const [visibleCount, setVisibleCount] = useState(0);
 
   useEffect(() => {
@@ -267,11 +280,11 @@ export const Hero = ({
 
   return (
     <group {...props} ref={crew} position={[5.6, 0, 5.6]} rotation-y={Math.PI / 4}>
-      <CrewMember name="Harvey Yang" labelOffsetY={0.5} model="Junior" shirt="#f2cc3d" trousers="#15191b" position={[0, 0, 0]} phase={0} revealed={visibleCount >= 1} charlieBrownShirt />
-      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" shirt="#ac91de" trousers="#7995c3" position={[-3.5, 0, 0]} phase={0.8} revealed={visibleCount >= 2} />
-      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" shirt="#174a32" trousers="#15191b" position={[-1.75, 0, 0]} phase={1.6} revealed={visibleCount >= 3} />
-      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" shirt="#b7a276" trousers="#34383b" position={[1.75, 0, 0]} phase={2.4} revealed={visibleCount >= 4} />
-      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" shirt="#9bcb7b" trousers="#f4f2ea" position={[3.5, 0, 0]} phase={3.2} revealed={visibleCount >= 5} />
+      <CrewMember name="Harvey Yang" labelOffsetY={0.5} model="Junior" shirt="#f2cc3d" trousers="#15191b" position={calibration.crewPositions.harvey} phase={0} revealed={visibleCount >= 1} charlieBrownShirt />
+      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" hairTransform={calibration.hairTransforms.HairFrenchBraid} shirt="#ac91de" trousers="#7995c3" position={calibration.crewPositions.olivia} phase={0.8} revealed={visibleCount >= 2} />
+      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" hairTransform={calibration.hairTransforms.HairSideBraids} shirt="#174a32" trousers="#15191b" position={calibration.crewPositions.tinya} phase={1.6} revealed={visibleCount >= 3} />
+      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" hairTransform={calibration.hairTransforms.HairPigtailsHigh} shirt="#b7a276" trousers="#34383b" position={calibration.crewPositions.june} phase={2.4} revealed={visibleCount >= 4} />
+      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" hairTransform={calibration.hairTransforms.HairPigtailsClassic} shirt="#9bcb7b" trousers="#f4f2ea" position={calibration.crewPositions.anglea} phase={3.2} revealed={visibleCount >= 5} />
     </group>
   );
 };

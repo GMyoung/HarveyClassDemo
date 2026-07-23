@@ -63,7 +63,8 @@ export const InteractionArea = () => {
   useEffect(() => {
     const nextKeys = new Set(["ArrowRight", "ArrowDown", "PageDown", "Enter", " "]);
     const previousKeys = new Set(["ArrowLeft", "ArrowUp", "PageUp", "Backspace"]);
-    const interactiveSelector = "button, a, input, textarea, select, [contenteditable='true']";
+    const interactiveSelector =
+      "[data-deck-interactive], button, a, input, textarea, select, [contenteditable='true']";
     let pointerStart: { x: number; y: number } | null = null;
     let didDrag = false;
 
@@ -105,12 +106,21 @@ export const InteractionArea = () => {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target instanceof Element ? event.target : null;
+      const isPanelControl = Boolean(target?.closest("[data-deck-interactive]"));
+      const isEditable = Boolean(
+        target?.closest("input, textarea, select, [contenteditable='true']"),
+      );
+      const isNativeButtonActivation =
+        (event.key === "Enter" || event.key === " ") &&
+        Boolean(target?.closest("button, a"));
       if (
         event.repeat ||
         event.altKey ||
         event.ctrlKey ||
         event.metaKey ||
-        target?.matches("input, textarea, select, [contenteditable='true']")
+        isPanelControl ||
+        isEditable ||
+        isNativeButtonActivation
       ) {
         return;
       }

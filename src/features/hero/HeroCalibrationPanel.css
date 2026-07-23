@@ -1,0 +1,242 @@
+.hero-calibration {
+  --calibration-yellow: #ffcf00;
+  --calibration-red: #e2231a;
+  position: fixed;
+  z-index: 8;
+  top: 7.2rem;
+  width: min(17.5rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 14rem);
+  overflow: auto;
+  pointer-events: auto;
+  color: #f8f7f2;
+  border: 2px solid rgba(255, 207, 0, 0.8);
+  border-radius: 14px;
+  background: rgba(17, 19, 24, 0.94);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  font-family: system-ui, sans-serif;
+  overscroll-behavior: contain;
+}
+
+.hero-calibration--right { right: 1rem; }
+.hero-calibration--left { left: 1rem; }
+
+.hero-calibration__header {
+  min-height: 3.2rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.hero-calibration__stud {
+  width: 1.55rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--calibration-yellow);
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.18), 0 0 0 3px rgba(255, 207, 0, 0.14);
+}
+
+.hero-calibration__header > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+
+.hero-calibration__header small {
+  color: var(--calibration-yellow);
+  font: 800 0.55rem/1.1 monospace;
+  letter-spacing: 0.12em;
+}
+
+.hero-calibration__header strong {
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hero-calibration button,
+.hero-calibration input,
+.hero-calibration select {
+  font: inherit;
+}
+
+.hero-calibration button {
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), background-color 140ms ease, border-color 140ms ease;
+}
+
+.hero-calibration button:active { transform: scale(0.97); }
+
+.hero-calibration button:focus-visible,
+.hero-calibration input:focus-visible,
+.hero-calibration select:focus-visible {
+  outline: 3px solid var(--calibration-yellow);
+  outline-offset: 2px;
+}
+
+.hero-calibration__icon-button {
+  width: 1.85rem;
+  height: 1.85rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.hero-calibration__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.72rem;
+  padding: 0.72rem;
+}
+
+.hero-calibration__tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+  padding: 0.24rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.hero-calibration__tabs button {
+  min-height: 2rem;
+  border-color: transparent;
+  border-radius: 7px;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.hero-calibration__tabs button[aria-selected="true"] {
+  color: #111318;
+  border-color: var(--calibration-yellow);
+  background: var(--calibration-yellow);
+}
+
+.hero-calibration__select {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+}
+
+.hero-calibration__select > span,
+.hero-calibration__number > span {
+  color: rgba(255, 255, 255, 0.68);
+  font: 800 0.58rem/1 monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-calibration__select select,
+.hero-calibration__number input {
+  min-width: 0;
+  color: #111318;
+  border: 0;
+  border-radius: 7px;
+  background: #f8f7f2;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+
+.hero-calibration__select select {
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.hero-calibration__select small {
+  grid-column: 2;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.5);
+  font: 600 0.55rem/1 monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hero-calibration__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.hero-calibration__number {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.hero-calibration__number input {
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.35rem;
+  font: 750 0.7rem/1 monospace;
+}
+
+.hero-calibration__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+.hero-calibration__actions button {
+  min-height: 2.15rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  font-weight: 850;
+}
+
+.hero-calibration__actions .hero-calibration__copy {
+  color: #111318;
+  border-color: var(--calibration-yellow);
+  background: var(--calibration-yellow);
+}
+
+.hero-calibration__hint {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.58rem;
+  line-height: 1.35;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-calibration button:hover {
+    border-color: rgba(255, 207, 0, 0.7);
+    background-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .hero-calibration__tabs button[aria-selected="true"]:hover,
+  .hero-calibration__actions .hero-calibration__copy:hover {
+    background-color: #ffe166;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero-calibration,
+  .hero-calibration--left,
+  .hero-calibration--right {
+    top: auto;
+    right: 0.6rem;
+    bottom: 7.2rem;
+    left: 0.6rem;
+    width: auto;
+    max-height: min(45dvh, 23rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-calibration button { transition-duration: 80ms; }
+}
