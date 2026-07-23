@@ -6,9 +6,9 @@ import { useRotatingDisplayContext } from "@/contexts/RotatingDisplay";
 import { useMediaQuery } from "@/hooks";
 import { MOBILE_BREAKPOINT_QUERY } from "@/theme";
 import { useSectionsContext } from "@/contexts/Sections";
-import storySystem from "@/assets/story_system.png?url";
+import storyMinifigures from "@/assets/story_minifigures.png?url";
+import storyLicensedWorlds from "@/assets/story_licensed_worlds.png?url";
 import ninjago from "@/assets/ninjago.png?url";
-import legoMovie from "@/assets/lego_movie.png?url";
 import legoFortnite from "@/assets/lego_fortnite.png?url";
 
 const MINIFIGURE_DIMENSIONS = { width: 2.5, depth: 1.5 };
@@ -18,32 +18,32 @@ const STORY_BEATS = [
     model: "Intern",
     shirt: "#b11f24",
     trousers: "#15191b",
-    year: "2011",
-    label: "NINJAGO",
-    work: ninjago,
+    year: "1999",
+    label: "BORROW A STORY",
+    work: storyLicensedWorlds,
   },
   {
     model: "Junior",
     shirt: "#ef6c00",
     trousers: "#174a32",
-    year: "2014",
-    label: "THE LEGO MOVIE",
-    work: legoMovie,
+    year: "2011",
+    label: "OWN A WORLD",
+    work: ninjago,
   },
   {
     model: "Junior",
     shirt: "#087bc1",
     trousers: "#15191b",
-    year: "1958",
-    label: "THE LEGO SYSTEM",
-    work: storySystem,
+    year: "1978",
+    label: "GIVE CHARACTERS",
+    work: storyMinifigures,
   },
   {
     model: "Intern",
     shirt: "#6a1b9a",
     trousers: "#15191b",
     year: "2023",
-    label: "LEGO FORTNITE",
+    label: "PARTNER TO SCALE",
     work: legoFortnite,
   },
 ] as const;
