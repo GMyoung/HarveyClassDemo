@@ -67,7 +67,6 @@ export const SectionHeaders = ({ ref }: { ref: RefObject<AnimationHandle> }) => 
   });
 
   const headerProps: (HeaderProps & { slide: number })[] = [
-    { slide: 1, label: "LEGO Story Engines", position: [0, y, z - 2], rotation: [0, Math.PI / 2, 0] },
     { slide: 2, label: "LEGO Worlds", position: [-x - 1, y, z - 2], rotation: [0, Math.PI, 0] },
     { slide: 19, label: "Story Theater", position: [-x + 1, y + 1.4, z], rotation: [0, -Math.PI / 2, 0] },
   ];

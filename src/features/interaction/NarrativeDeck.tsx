@@ -2,6 +2,7 @@ import { useSectionsContext } from "@/contexts/Sections";
 import { HeroCalibrationPanel } from "@/features/hero/HeroCalibrationPanel";
 import { StoryMotion } from "./StoryMotion";
 import { StrategySlide } from "./StrategySlide";
+import teamQrCode from "@/assets/team_qr_code.png?url";
 import "./StrategySlide.css";
 
 const SHOW_HERO_CALIBRATION_PANEL = false;
@@ -69,10 +70,12 @@ export const NarrativeDeck = () => {
   if (slideIndex === 0) {
     return (
       <>
-        <div className="hero-slide-title" aria-label="Meet the Crew">
-          <span>01</span>
-          <strong>MEET THE<br />CREW</strong>
-        </div>
+        {!hasEntered && (
+          <aside className="team-qr-entry" aria-label="Presentation QR code">
+            <img src={teamQrCode} alt="QR code for the LEGO presentation" />
+            <span>SCAN BEFORE WE BEGIN</span>
+          </aside>
+        )}
         {SHOW_HERO_CALIBRATION_PANEL && <HeroCalibrationPanel />}
         {hasEntered && <StoryMotion slideIndex={0} placement="overlay" />}
       </>

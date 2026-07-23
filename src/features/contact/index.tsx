@@ -50,15 +50,28 @@ const STORY_BEATS = [
 
 const WorkPlacard = ({ image, position }: { image: string; position: [number, number, number] }) => {
   const texture = useLoader(TextureLoader, image);
-  texture.colorSpace = SRGBColorSpace;
+  const uprightTexture = useMemo(() => {
+    texture.colorSpace = SRGBColorSpace;
+    texture.flipY = true;
+    texture.needsUpdate = true;
+    return texture;
+  }, [texture]);
 
   return (
     <group position={position}>
-      <sprite scale={[1.34, 0.82, 1]} renderOrder={19}>
+      <mesh position={[-0.48, -0.66, 0.08]}>
+        <boxGeometry args={[0.1, 0.72, 0.1]} />
+        <meshPhysicalMaterial color="#8a4f22" roughness={0.5} />
+      </mesh>
+      <mesh position={[0.48, -0.66, 0.08]}>
+        <boxGeometry args={[0.1, 0.72, 0.1]} />
+        <meshPhysicalMaterial color="#8a4f22" roughness={0.5} />
+      </mesh>
+      <sprite scale={[1.9, 1.15, 1]} renderOrder={19}>
         <spriteMaterial color="#111318" depthTest={false} depthWrite={false} />
       </sprite>
-      <sprite scale={[1.22, 0.69, 1]} position={[0, 0, 0.01]} renderOrder={20}>
-        <spriteMaterial map={texture} toneMapped={false} depthTest={false} depthWrite={false} />
+      <sprite scale={[1.72, 0.97, 1]} position={[0, 0, 0.01]} renderOrder={20}>
+        <spriteMaterial map={uprightTexture} toneMapped={false} depthTest={false} depthWrite={false} />
       </sprite>
     </group>
   );
@@ -147,7 +160,7 @@ export const Contact = () => {
         return (
           <Suspense key={beat.label} fallback={null}>
             <StoryCard year={beat.year} label={beat.label} position={[cardX, 3.35, cardZ]} />
-            <WorkPlacard image={beat.work} position={[x, 1.45, z]} />
+            <WorkPlacard image={beat.work} position={[x, 1.72, z]} />
             <group position={[x, 0.55, z]} rotation-y={rotationY} scale={0.92}>
               <CrewMember
                 model={beat.model}
