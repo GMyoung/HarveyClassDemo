@@ -41,6 +41,7 @@ export const prepareFinaleAudio = () => {
 export const startFinaleAudio = async () => {
   const audio = getAudio();
   playbackError = "";
+  delete audio.dataset.fallbackStartedAt;
   delete audio.dataset.playbackError;
   cancelVolumeAnimation();
   audio.pause();
@@ -53,6 +54,7 @@ export const startFinaleAudio = async () => {
     playbackError = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
     audio.dataset.playbackError = playbackError;
     audio.volume = 0.78;
+    audio.dataset.fallbackStartedAt = String(performance.now());
     return false;
   }
 
@@ -70,6 +72,7 @@ export const startFinaleAudio = async () => {
 export const stopFinaleAudio = (reset = true) => {
   cancelVolumeAnimation();
   if (!finaleAudio) return;
+  delete finaleAudio.dataset.fallbackStartedAt;
   finaleAudio.pause();
   finaleAudio.volume = 0.78;
   if (reset) finaleAudio.currentTime = 0;
@@ -80,18 +83,23 @@ export const getFinalePlayback = () => {
   const duration = Number.isFinite(audio.duration) && audio.duration > 0
     ? audio.duration
     : FALLBACK_DURATION_SECONDS;
+  const fallbackStartedAt = Number(audio.dataset.fallbackStartedAt);
+  const fallbackTime = Number.isFinite(fallbackStartedAt) && fallbackStartedAt > 0
+    ? Math.min(duration, (performance.now() - fallbackStartedAt) / 1000)
+    : null;
   const currentTime = previewTime === null
-    ? Number.isFinite(audio.currentTime) ? audio.currentTime : 0
+    ? fallbackTime ?? (Number.isFinite(audio.currentTime) ? audio.currentTime : 0)
     : Math.min(duration, previewTime);
   const isPreview = previewTime !== null;
+  const isFallback = fallbackTime !== null;
 
   return {
     currentTime,
     duration,
     progress: Math.min(1, currentTime / duration),
-    isPlaying: isPreview || (!audio.paused && !audio.ended),
-    hasStarted: isPreview || currentTime > 0 || !audio.paused,
-    hasEnded: currentTime >= duration - 0.15 || (!isPreview && audio.ended),
+    isPlaying: isPreview || isFallback || (!audio.paused && !audio.ended),
+    hasStarted: isPreview || isFallback || currentTime > 0 || !audio.paused,
+    hasEnded: currentTime >= duration - 0.15 || (!isPreview && !isFallback && audio.ended),
     readyState: audio.readyState,
     error: playbackError,
   };

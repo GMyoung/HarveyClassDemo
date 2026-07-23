@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">HY</title>
+  <rect width="512" height="512" rx="88" fill="#07364b"/>
+  <g fill="#ffc64a">
+    <path d="M54 126h54v101h70V126h54v260h-54V281h-70v105H54z"/>
+    <path d="M254 126h60l50 90 50-90h60l-81 151v109h-58V277z"/>
+  </g>
+</svg>

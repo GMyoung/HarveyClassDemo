@@ -8,13 +8,6 @@ import {
 } from "./finaleAudio";
 import "./FinaleCredits.css";
 
-const CHAPTERS = [
-  { year: "1978", action: "GIVE CHARACTERS", start: 0.055, color: "#087bc1" },
-  { year: "1999", action: "BORROW A STORY", start: 0.255, color: "#e2231a" },
-  { year: "2011", action: "OWN A WORLD", start: 0.455, color: "#f57c00" },
-  { year: "2023", action: "PARTNER TO SCALE", start: 0.655, color: "#a86ee8" },
-] as const;
-
 const ROLLING_CREDITS = [
   {
     year: "1932—1958",
@@ -67,9 +60,6 @@ const ROLLING_CREDITS = [
   },
 ] as const;
 
-const FINAL_CHAPTER_START = 0.835;
-const SCENE_STARTS = [0, 0.055, 0.155, 0.255, 0.355, 0.455, 0.555, 0.655, 0.835, 0.94] as const;
-
 const formatTime = (seconds: number) => {
   const whole = Math.max(0, Math.floor(seconds));
   return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
@@ -83,8 +73,7 @@ export const FinaleCredits = () => {
   const isLocalFinalePreview = isLocalHost && params.has("finalePreview");
   const shouldAutoReturn = !isLocalFinalePreview || params.has("finaleReturnPreview");
   const rootRef = useRef<HTMLElement>(null);
-  const [activeChapter, setActiveChapter] = useState(-1);
-  const [activeScene, setActiveScene] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [elapsedSecond, setElapsedSecond] = useState(0);
   const [durationSecond, setDurationSecond] = useState(143);
   const [progressPercent, setProgressPercent] = useState(0);
@@ -97,8 +86,6 @@ export const FinaleCredits = () => {
     let frame = 0;
     let returnTimer = 0;
     let returnScheduled = false;
-    let previousChapter = -2;
-    let previousScene = -1;
     let previousSecond = -1;
     let previousDuration = -1;
     let previousPercent = -1;
@@ -108,30 +95,20 @@ export const FinaleCredits = () => {
 
     const update = () => {
       const playback = getFinalePlayback();
-      const chapter = playback.progress >= FINAL_CHAPTER_START
-        ? CHAPTERS.length
-        : CHAPTERS.reduce(
-            (latest, item, index) => playback.progress >= item.start ? index : latest,
-            -1,
-          );
-      const scene = SCENE_STARTS.reduce<number>(
-        (latest, start, index) => playback.progress >= start ? index : latest,
-        0,
-      );
       const root = rootRef.current;
+      const track = trackRef.current;
       const progressWidth = `${(playback.progress * 100).toFixed(3)}%`;
-      root?.style.setProperty("--finale-progress", String(playback.progress));
-      root?.style.setProperty("--finale-progress-width", progressWidth);
-      root?.style.setProperty("--finale-progress-left", progressWidth);
 
-      if (chapter !== previousChapter) {
-        previousChapter = chapter;
-        setActiveChapter(chapter);
+      if (root) {
+        root.style.setProperty("--finale-progress-width", progressWidth);
+        if (track) {
+          const startY = root.clientHeight * 0.18;
+          const endY = root.clientHeight * 0.74 - track.scrollHeight;
+          const rollY = startY + (endY - startY) * playback.progress;
+          root.style.setProperty("--finale-roll-y", `${rollY.toFixed(1)}px`);
+        }
       }
-      if (scene !== previousScene) {
-        previousScene = scene;
-        setActiveScene(scene);
-      }
+
       const nextSecond = Math.floor(playback.currentTime);
       if (nextSecond !== previousSecond) {
         previousSecond = nextSecond;
@@ -165,7 +142,7 @@ export const FinaleCredits = () => {
         returnTimer = window.setTimeout(() => {
           stopFinaleAudio();
           resetToStart();
-        }, 900);
+        }, 1100);
       }
 
       frame = window.requestAnimationFrame(update);
@@ -194,24 +171,23 @@ export const FinaleCredits = () => {
     <section
       ref={rootRef}
       className={`finale-credits${isLocalBarePreview ? " finale-credits--bare" : ""}`}
-      data-phase={activeChapter < 0 ? "opening" : activeChapter >= CHAPTERS.length ? "final" : "chapter"}
       data-state={state}
       aria-label="LEGO story journey rolling credits"
     >
-      <div className="finale-credits__vignette" aria-hidden="true" />
-      <div className="finale-credits__scan" aria-hidden="true" />
-      <div className="finale-studs" aria-hidden="true">
-        {Array.from({ length: 24 }, (_, index) => (
-          <i
-            key={index}
-            style={{
-              "--stud-index": index,
-              "--stud-x": `${(index * 37) % 101}%`,
-              "--stud-size": `${6 + (index % 4) * 3}px`,
-              "--stud-delay": `${-((index * 0.83) % 7)}s`,
-            } as CSSProperties}
-          />
-        ))}
+      <div className="finale-backdrop" aria-hidden="true">
+        <div className="finale-backdrop__glow" />
+        <div className="finale-backdrop__bricks">
+          {Array.from({ length: 18 }, (_, index) => (
+            <i
+              key={index}
+              style={{
+                "--brick-index": index,
+                "--brick-x": `${(index * 41) % 101}%`,
+                "--brick-delay": `${-((index * 1.13) % 11)}s`,
+              } as CSSProperties}
+            />
+          ))}
+        </div>
       </div>
 
       <header className="finale-credits__header">
@@ -228,57 +204,51 @@ export const FinaleCredits = () => {
         </p>
       </header>
 
-      <div className="finale-scenes" aria-live="off">
-        <section className={`finale-scene finale-roll__opening${activeScene === 0 ? " is-active" : ""}`}>
-          <p>FOUR MOVES. ONE SYSTEM.</p>
-          <h2>How one brick became an entrance to countless worlds.</h2>
-          <span>Character → Translation → Continuity → Participation</span>
-        </section>
+      <div className="finale-roll-window" aria-live="off">
+        <div ref={trackRef} className="finale-roll-track">
+          <section className="finale-roll-title">
+            <p>STORY CREDITS</p>
+            <h2>How one brick became an entrance to countless worlds.</h2>
+            <span>Character → Translation → Continuity → Participation</span>
+          </section>
 
-        {ROLLING_CREDITS.map((credit, index) => (
-          <article
-            key={credit.year}
-            className={`finale-scene finale-roll__beat${activeScene === index + 1 ? " is-active" : ""}`}
-            style={{ "--credit-color": credit.color } as CSSProperties}
-          >
-            <span>{credit.year}</span>
-            <p>{credit.kicker}</p>
-            <h2>{credit.title}</h2>
-            <small>{credit.copy}</small>
-          </article>
-        ))}
+          {ROLLING_CREDITS.map((credit) => (
+            <article
+              key={credit.year}
+              className="finale-credit"
+              style={{ "--credit-color": credit.color } as CSSProperties}
+            >
+              <div>
+                <span>{credit.year}</span>
+                <i aria-hidden="true" />
+              </div>
+              <section>
+                <p>{credit.kicker}</p>
+                <h2>{credit.title}</h2>
+                <small>{credit.copy}</small>
+              </section>
+            </article>
+          ))}
 
-        <section className={`finale-scene finale-roll__resolution${activeScene === 8 ? " is-active" : ""}`}>
-          <p>THE STRATEGIC ANSWER</p>
-          <h2>THE BRICK STAYS AT THE CENTER.</h2>
-          <span>Entertainment creates reach, continuity, agency, and recurrence.</span>
-          <strong>EVERY LOOP MUST RETURN VALUE TO PHYSICAL PLAY.</strong>
-          <small>Partner for production. Control the play system.</small>
-        </section>
+          <section className="finale-roll-answer">
+            <p>THE STRATEGIC ANSWER</p>
+            <h2>THE BRICK STAYS AT THE CENTER.</h2>
+            <span>Entertainment creates reach, continuity, agency, and recurrence.</span>
+            <strong>EVERY LOOP MUST RETURN VALUE TO PHYSICAL PLAY.</strong>
+            <small>Partner for production. Control the play system.</small>
+          </section>
 
-        <section className={`finale-scene finale-roll__closing${activeScene === 9 ? " is-active" : ""}`}>
-          <p>THE END IS ANOTHER START</p>
-          <h2>KEEP BUILDING.</h2>
-          <span>Thank you.</span>
-        </section>
+          <section className="finale-roll-thanks">
+            <p>THE END IS ANOTHER START</p>
+            <h2>KEEP BUILDING.</h2>
+            <span>Thank you.</span>
+          </section>
+        </div>
       </div>
 
-      <footer className="finale-timeline">
-        <div className="finale-timeline__rail" aria-hidden="true"><i /></div>
-        <ol>
-          {CHAPTERS.map((item, index) => (
-            <li
-              key={item.year}
-              className={activeChapter >= index ? "is-revealed" : ""}
-              style={{ "--chapter-color": item.color } as CSSProperties}
-            >
-              <i />
-              <strong>{item.year}</strong>
-              <span>{item.action}</span>
-            </li>
-          ))}
-        </ol>
-        <div className="finale-timeline__status">
+      <footer className="finale-progress">
+        <div className="finale-progress__rail" aria-hidden="true"><i /></div>
+        <div>
           <strong>{progressPercent}%</strong>
           <span>{formatTime(elapsedSecond)} / {formatTime(durationSecond)}</span>
         </div>
