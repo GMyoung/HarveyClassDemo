@@ -1,11 +1,10 @@
 .finale-credits {
-  --finale-progress-width: 0%;
   --finale-roll-y: 18vh;
   position: absolute;
   inset: 0;
   z-index: 30;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   padding: clamp(1rem, 2.8vh, 1.8rem) clamp(1rem, 4vw, 4rem) clamp(1rem, 2.8vh, 1.8rem);
   color: #fff;
   background:
@@ -207,22 +206,6 @@
 .finale-roll-thanks { min-height: clamp(300px, 48vh, 450px); }
 .finale-roll-thanks h2 { color: #ffcf00; font-size: calc(clamp(3rem, 8vw, 7.2rem) + var(--font-boost)); }
 
-.finale-progress {
-  position: relative;
-  z-index: 4;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 0.8rem;
-  padding-top: 0.8rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.finale-progress__rail { height: 5px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); overflow: hidden; }
-.finale-progress__rail i { display: block; width: var(--finale-progress-width); height: 100%; border-radius: inherit; background: linear-gradient(90deg, #087bc1, #e2231a 38%, #ffcf00 68%, #00a651); box-shadow: 0 0 16px #ffcf00; }
-.finale-progress > div { display: flex; align-items: center; gap: 0.5rem; color: rgba(255, 255, 255, 0.7); font: 800 calc(0.58rem + var(--font-boost))/1 monospace; }
-.finale-progress strong { min-width: 2.4rem; padding: 0.28rem 0.4rem; color: #111318; border-radius: 999px; background: #ffcf00; text-align: center; }
-
 .finale-click-surface {
   position: absolute;
   inset: 0;
@@ -237,6 +220,14 @@
   box-shadow: none;
   cursor: pointer;
   pointer-events: auto;
+}
+
+.finale-click-surface:hover,
+.finale-click-surface:active,
+.finale-click-surface:focus {
+  background: transparent;
+  box-shadow: none;
+  transform: none;
 }
 
 .finale-click-surface:focus-visible { outline: 3px solid #ffcf00; outline-offset: -8px; }
@@ -264,7 +255,6 @@
   .finale-credit { grid-template-columns: 1fr; gap: 0.65rem; text-align: center; }
   .finale-credit > section { justify-items: center; }
   .finale-credit > div i { display: none; }
-  .finale-progress > div span { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

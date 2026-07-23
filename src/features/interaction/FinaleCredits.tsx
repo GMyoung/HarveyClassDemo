@@ -60,11 +60,6 @@ const ROLLING_CREDITS = [
   },
 ] as const;
 
-const formatTime = (seconds: number) => {
-  const whole = Math.max(0, Math.floor(seconds));
-  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
-};
-
 export const FinaleCredits = () => {
   const { resetToStart } = useSectionsContext();
   const params = new URLSearchParams(window.location.search);
@@ -74,9 +69,6 @@ export const FinaleCredits = () => {
   const shouldAutoReturn = !isLocalFinalePreview || params.has("finaleReturnPreview");
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const [elapsedSecond, setElapsedSecond] = useState(0);
-  const [durationSecond, setDurationSecond] = useState(143);
-  const [progressPercent, setProgressPercent] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
@@ -86,9 +78,6 @@ export const FinaleCredits = () => {
     let frame = 0;
     let returnTimer = 0;
     let returnScheduled = false;
-    let previousSecond = -1;
-    let previousDuration = -1;
-    let previousPercent = -1;
     let previousPlaying = false;
     let previousStarted = false;
     let previousEnded = false;
@@ -97,10 +86,8 @@ export const FinaleCredits = () => {
       const playback = getFinalePlayback();
       const root = rootRef.current;
       const track = trackRef.current;
-      const progressWidth = `${(playback.progress * 100).toFixed(3)}%`;
 
       if (root) {
-        root.style.setProperty("--finale-progress-width", progressWidth);
         if (track) {
           const startY = root.clientHeight * 0.18;
           const endY = root.clientHeight * 0.74 - track.scrollHeight;
@@ -109,21 +96,6 @@ export const FinaleCredits = () => {
         }
       }
 
-      const nextSecond = Math.floor(playback.currentTime);
-      if (nextSecond !== previousSecond) {
-        previousSecond = nextSecond;
-        setElapsedSecond(nextSecond);
-      }
-      const nextDuration = Math.round(playback.duration);
-      if (nextDuration !== previousDuration) {
-        previousDuration = nextDuration;
-        setDurationSecond(nextDuration);
-      }
-      const nextPercent = Math.round(playback.progress * 100);
-      if (nextPercent !== previousPercent) {
-        previousPercent = nextPercent;
-        setProgressPercent(nextPercent);
-      }
       if (playback.isPlaying !== previousPlaying) {
         previousPlaying = playback.isPlaying;
         setIsPlaying(playback.isPlaying);
@@ -245,14 +217,6 @@ export const FinaleCredits = () => {
           </section>
         </div>
       </div>
-
-      <footer className="finale-progress">
-        <div className="finale-progress__rail" aria-hidden="true"><i /></div>
-        <div>
-          <strong>{progressPercent}%</strong>
-          <span>{formatTime(elapsedSecond)} / {formatTime(durationSecond)}</span>
-        </div>
-      </footer>
 
       <button
         type="button"
