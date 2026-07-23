@@ -10,6 +10,7 @@ import fortniteFrame14 from "@/assets/story_fortnite_frame_14.jpg?url";
 import fortniteFrame31 from "@/assets/story_fortnite_frame_31.jpg?url";
 import { StoryMotion } from "./StoryMotion";
 import { StoryImage, StorySlideshow, StoryVideo } from "./StoryMedia";
+import { SlideAtmosphere } from "./SlideAtmosphere";
 
 type StrategySlideProps = { slideIndex: number };
 type Tone = "yellow" | "red" | "blue" | "green" | "purple" | "dark";
@@ -32,6 +33,7 @@ const SlideShell = ({ slideIndex, eyebrow, title, lead, tone = "yellow", source,
     aria-labelledby={`strategy-slide-${slideIndex}`}
     data-native-slide={slideIndex}
   >
+    <SlideAtmosphere slideIndex={slideIndex} />
     <header className="strategy-slide__header" style={enterStyle(0)}>
       <div>
         <p className="strategy-slide__eyebrow">{eyebrow}</p>

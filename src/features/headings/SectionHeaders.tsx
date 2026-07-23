@@ -27,7 +27,7 @@ const Header = ({ label, ...props }: HeaderProps) => {
     context.fillStyle = "#ffcf00";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.font = "900 108px system-ui, sans-serif";
+    context.font = "900 110px system-ui, sans-serif";
     const words = label.toUpperCase().split(" ");
     const splitAt = Math.ceil(words.length / 2);
     const lines = words.length > 2
