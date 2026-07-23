@@ -286,7 +286,7 @@ export const Hero = ({
       <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" hairTransform={calibration.hairTransforms.HairFrenchBraid} shirt="#ac91de" trousers="#7995c3" position={calibration.crewPositions.olivia} phase={0.8} facingAngle={MathUtils.degToRad(20)} revealed={visibleCount >= 2} />
       <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" hairTransform={calibration.hairTransforms.HairSideBraids} shirt="#174a32" trousers="#15191b" position={calibration.crewPositions.tinya} phase={1.6} facingAngle={MathUtils.degToRad(10)} revealed={visibleCount >= 3} />
       <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" hairTransform={calibration.hairTransforms.HairPigtailsHigh} shirt="#b7a276" trousers="#34383b" position={calibration.crewPositions.june} phase={2.4} facingAngle={MathUtils.degToRad(-10)} revealed={visibleCount >= 4} />
-      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" hairTransform={calibration.hairTransforms.HairPigtailsClassic} shirt="#9bcb7b" trousers="#f4f2ea" position={calibration.crewPositions.anglea} phase={3.2} facingAngle={MathUtils.degToRad(-20)} revealed={visibleCount >= 5} />
+      <CrewMember name="Angela" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" hairTransform={calibration.hairTransforms.HairPigtailsClassic} shirt="#9bcb7b" trousers="#f4f2ea" position={calibration.crewPositions.anglea} phase={3.2} facingAngle={MathUtils.degToRad(-20)} revealed={visibleCount >= 5} />
     </group>
   );
 };

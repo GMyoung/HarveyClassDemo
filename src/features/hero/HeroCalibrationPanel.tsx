@@ -19,14 +19,14 @@ const CREW_OPTIONS: Array<{ id: CrewId; label: string }> = [
   { id: "olivia", label: "Olivia" },
   { id: "tinya", label: "Tinya" },
   { id: "june", label: "June" },
-  { id: "anglea", label: "Anglea" },
+  { id: "anglea", label: "Angela" },
 ];
 
 const HAIR_OPTIONS: Array<{ crewId: CrewId; label: string; style: CrewHair }> = [
   { crewId: "olivia", label: "Olivia", style: "HairFrenchBraid" },
   { crewId: "tinya", label: "Tinya", style: "HairSideBraids" },
   { crewId: "june", label: "June", style: "HairPigtailsHigh" },
-  { crewId: "anglea", label: "Anglea", style: "HairPigtailsClassic" },
+  { crewId: "anglea", label: "Angela", style: "HairPigtailsClassic" },
 ];
 
 const POSITION_FIELDS: Array<{ label: string; index: TupleIndex }> = [

@@ -65,8 +65,6 @@ export const FinaleCredits = () => {
   const params = new URLSearchParams(window.location.search);
   const isLocalHost = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
   const isLocalBarePreview = isLocalHost && params.has("finaleBare");
-  const isLocalFinalePreview = isLocalHost && params.has("finalePreview");
-  const shouldAutoReturn = !isLocalFinalePreview || params.has("finaleReturnPreview");
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -76,8 +74,6 @@ export const FinaleCredits = () => {
   useEffect(() => {
     prepareFinaleAudio();
     let frame = 0;
-    let returnTimer = 0;
-    let returnScheduled = false;
     let previousPlaying = false;
     let previousStarted = false;
     let previousEnded = false;
@@ -109,25 +105,16 @@ export const FinaleCredits = () => {
         setHasEnded(playback.hasEnded);
       }
 
-      if (playback.hasEnded && !returnScheduled && shouldAutoReturn) {
-        returnScheduled = true;
-        returnTimer = window.setTimeout(() => {
-          stopFinaleAudio();
-          resetToStart();
-        }, 1100);
-      }
-
       frame = window.requestAnimationFrame(update);
     };
 
     frame = window.requestAnimationFrame(update);
     return () => {
       window.cancelAnimationFrame(frame);
-      if (returnTimer) window.clearTimeout(returnTimer);
     };
-  }, [resetToStart, shouldAutoReturn]);
+  }, []);
 
-  const state = hasEnded ? "returning" : isPlaying ? "rolling" : hasStarted ? "paused" : "ready";
+  const state = hasEnded ? "credits" : isPlaying ? "rolling" : hasStarted ? "paused" : "ready";
 
   const toggleCredits = () => {
     const playback = getFinalePlayback();
@@ -178,7 +165,7 @@ export const FinaleCredits = () => {
         </div>
         <p>
           {hasEnded
-            ? "RETURNING TO START"
+            ? "CLICK ANYWHERE TO RESTART"
             : isPlaying
               ? "CLICK ANYWHERE TO END"
               : "CLICK ANYWHERE TO START"}
@@ -226,6 +213,36 @@ export const FinaleCredits = () => {
           </section>
         </div>
       </div>
+
+      <section className="finale-end-credits" aria-hidden={!hasEnded}>
+        <div className="finale-end-credits__card">
+          <p>PROJECT CREDITS</p>
+          <h2>BUILDING BEYOND THE BRICK</h2>
+          <div className="finale-end-credits__grid">
+            <article>
+              <span>CREATED &amp; PRESENTED BY</span>
+              <strong>Harvey Yang</strong>
+              <small>https://github.com/GMyoung</small>
+            </article>
+            <article>
+              <span>PROJECT SOURCE</span>
+              <strong>HarveyClassDemo</strong>
+              <small>https://github.com/GMyoung/HarveyClassDemo</small>
+            </article>
+            <article>
+              <span>MEDIA &amp; RESEARCH SOURCES</span>
+              <strong>The LEGO Group · Lucasfilm / StarWars.com · Warner Bros. Pictures · Epic Games</strong>
+              <small>github.com/GMyoung/HarveyClassDemo/blob/main/materials/trailer-sources.md</small>
+            </article>
+            <article>
+              <span>BUILD &amp; ATTRIBUTION</span>
+              <strong>React · Three.js · AnimateIcons</strong>
+              <small>github.com/GMyoung/HarveyClassDemo/blob/main/public/THIRD_PARTY_NOTICES.txt</small>
+            </article>
+          </div>
+          <footer>CLICK ANYWHERE TO RETURN TO THE BEGINNING</footer>
+        </div>
+      </section>
 
     </section>
   );
