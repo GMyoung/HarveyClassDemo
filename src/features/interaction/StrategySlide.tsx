@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import ninjago from "@/assets/case_ninjago.jpeg?url";
 import legoMovie from "@/assets/case_lego_movie.jpeg?url";
 import legoFortnite from "@/assets/case_lego_fortnite.jpeg?url";
+import { StoryMotion } from "./StoryMotion";
 
 type StrategySlideProps = { slideIndex: number };
 type Tone = "yellow" | "red" | "blue" | "green" | "purple" | "dark";
@@ -30,7 +31,10 @@ const SlideShell = ({ slideIndex, eyebrow, title, lead, tone = "yellow", source,
         <h2 id={`strategy-slide-${slideIndex}`}>{title}</h2>
         {lead && <p className="strategy-slide__lead">{lead}</p>}
       </div>
-      <span className="strategy-slide__mark" aria-hidden="true">BUILDING<br />BEYOND<br />THE BRICK</span>
+      <div className="strategy-slide__header-aside">
+        <StoryMotion slideIndex={slideIndex} placement="slide" />
+        <span className="strategy-slide__mark" aria-hidden="true">BUILDING<br />BEYOND<br />THE BRICK</span>
+      </div>
     </header>
     <div className="strategy-slide__body">{children}</div>
     {source && <footer className="strategy-slide__source">{source}</footer>}

@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@animateicons/react':
+    specifier: 0.3.4
+    version: 0.3.4(react-dom@19.2.0)(react@19.2.0)
   '@johnrdoty92/resume-generator':
     specifier: ^0.1.0
     version: 0.1.0(@react-pdf/renderer@4.3.2)(react-dom@19.2.0)(react@19.2.0)
@@ -75,6 +78,17 @@ devDependencies:
     version: 6.1.1(typescript@5.9.3)(vite@7.2.2)
 
 packages:
+
+  /@animateicons/react@0.3.4(react-dom@19.2.0)(react@19.2.0):
+    resolution: {integrity: sha512-7IO7aLBdp7p4awGx3sOTVVcU8s9kzHXBK2R27y1gGKfk3nI1gYh8+McVCtCkwa7ouiFwmBEDwrUEODpNOv+bSQ==}
+    engines: {node: '>=18.17.0'}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    dependencies:
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+    dev: false
 
   /@babel/runtime@7.28.4:
     resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}

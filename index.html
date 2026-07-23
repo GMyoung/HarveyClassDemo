@@ -447,7 +447,14 @@
         letter-spacing: -0.03em;
       }
 
-      .skills-story-caption > p {
+      .skills-story-caption__top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 0.65rem;
+      }
+
+      .skills-story-caption__top > p {
         color: #ffcf00;
         font: 900 0.68rem/1 monospace;
         letter-spacing: 0.1em;
@@ -517,6 +524,7 @@
       }
 
       .custom-story-slide {
+        position: relative;
         width: min(92vw, 1120px);
         max-height: calc(100dvh - 10.5rem);
         border: 5px solid #111318;
@@ -546,6 +554,7 @@
 
       .custom-story-slide h2 {
         max-width: 900px;
+        padding-inline-end: clamp(3.8rem, 8vw, 6rem);
         font-size: clamp(1.8rem, 4vw, 3.8rem);
         line-height: 1.02;
       }
@@ -958,6 +967,10 @@
         .custom-story-slide {
           max-height: calc(100dvh - 9rem);
           overflow-y: auto;
+        }
+
+        .custom-story-slide h2 {
+          padding-inline-end: 3.7rem;
         }
       }
 

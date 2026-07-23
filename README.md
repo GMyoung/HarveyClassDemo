@@ -8,6 +8,7 @@ An interactive, remote-friendly LEGO entertainment strategy presentation by Harv
 - Strategy steps 04–17 are semantic React/CSS scenes rather than full-slide screenshots.
 - React Three Fiber powers the opening crew, the three interactive case-study laptops, and the closing story theater.
 - NINJAGO, The LEGO Movie, and LEGO Fortnite use individual supporting visuals extracted from the supplied presentation.
+- Every story step includes a transparent, page-entry SVG motion cue powered by [AnimateIcons](https://github.com/Avijit07x/animateicons). Motion is short-lived and respects reduced-motion preferences.
 
 ## Run locally
 
@@ -27,7 +28,7 @@ pnpm preview
 
 ```bash
 pnpm build
-npx eslint src/features/hero/index.tsx src/features/interaction/StrategySlide.tsx src/features/interaction/NarrativeDeck.tsx src/features/interaction/InteractionArea.tsx src/features/workProjects/Laptop.tsx
+npx eslint src/features/hero/index.tsx src/features/interaction/StoryMotion.tsx src/features/interaction/StrategySlide.tsx src/features/interaction/NarrativeDeck.tsx src/features/interaction/InteractionArea.tsx src/features/workProjects/Laptop.tsx
 ```
 
 The production site is deployed to GitHub Pages from `.github/workflows/deploy.yml`.
@@ -41,3 +42,5 @@ The source files used for the class presentation are stored in [`materials/`](ma
 - `brief/source-storyline-brief.txt`
 
 These files are supporting materials and are not included in the GitHub Pages production bundle.
+
+Third-party licenses and attribution are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and copied into the production site as `/THIRD_PARTY_NOTICES.txt`.

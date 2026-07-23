@@ -1,9 +1,11 @@
 import { useSectionsContext } from "@/contexts/Sections";
+import { StoryMotion } from "./StoryMotion";
 import { StrategySlide } from "./StrategySlide";
 import "./StrategySlide.css";
 
 const BrickTest = () => (
   <section className="custom-story-slide brick-test">
+    <StoryMotion slideIndex={17} placement="card" />
     <p className="deck-eyebrow">RELATED DIVERSIFICATION DECISION GATE</p>
     <h2>Every entertainment bet must pass the Brick Test.</h2>
     <div className="test-grid">
@@ -25,6 +27,7 @@ const BrickTest = () => (
 
 const AudienceChallenge = () => (
   <section className="custom-story-slide audience-challenge">
+    <StoryMotion slideIndex={18} placement="card" />
     <p className="deck-eyebrow">INTERACTIVE FINALE</p>
     <h2>If you controlled LEGO's next world, what would you build?</h2>
     <div className="challenge-path">
@@ -42,7 +45,10 @@ const AudienceChallenge = () => (
 
 const SkillsStory = () => (
   <aside className="skills-story-caption" aria-live="polite">
-    <p>WHY ENTERTAINMENT MATTERS</p>
+    <div className="skills-story-caption__top">
+      <p>WHY ENTERTAINMENT MATTERS</p>
+      <StoryMotion slideIndex={1} placement="inline" />
+    </div>
     <h2>Stories turn LEGO bricks into a repeatable play engine.</h2>
     <ol>
       <li><strong>Film</strong> creates cultural reach.</li>
@@ -55,17 +61,23 @@ const SkillsStory = () => (
 );
 
 export const NarrativeDeck = () => {
-  const { slideIndex, slideCount } = useSectionsContext();
+  const { slideIndex, slideCount, hasEntered } = useSectionsContext();
 
   if (slideIndex === 0) {
     return (
-      <div className="hero-slide-title" aria-label="Meet the Crew">
-        <span>01</span>
-        <strong>MEET THE<br />CREW</strong>
-      </div>
+      <>
+        <div className="hero-slide-title" aria-label="Meet the Crew">
+          <span>01</span>
+          <strong>MEET THE<br />CREW</strong>
+        </div>
+        {hasEntered && <StoryMotion slideIndex={0} placement="overlay" />}
+      </>
     );
   }
   if (slideIndex === 1) return <SkillsStory />;
+  if (slideIndex === 2 || slideIndex === 19) {
+    return <StoryMotion slideIndex={slideIndex} placement="overlay" />;
+  }
   if (slideIndex < 3 || slideIndex > 18) return null;
 
   return (

@@ -49,7 +49,7 @@ const topMeshNames = new Set(["torso"]);
 const bottomMeshNames = new Set(["hips"]);
 const getSourceMeshName = (name: string) => name.replace(/_[0-9]+$/, "");
 const standingLegGeometry = new RoundedBoxGeometry(0.42, 0.86, 0.5, 5, 0.07);
-const standingArmGeometry = new CapsuleGeometry(0.17, 0.5, 8, 16);
+const standingArmGeometry = new CapsuleGeometry(0.15, 0.5, 8, 16);
 
 const createClothingMaterial = (color: string) =>
   new MeshPhysicalMaterial({
@@ -151,7 +151,7 @@ const StandingArm = ({
   side: -1 | 1;
   material: MeshPhysicalMaterial;
 }) => (
-  <group position={[side * 0.66, 1.55, -0.73]} rotation-z={side * 0.08}>
+  <group position={[side * 0.62, 1.55, -0.73]} rotation-z={side * 0.08}>
     <mesh geometry={standingArmGeometry} material={material} castShadow receiveShadow />
     <mesh position={[0, -0.44, 0]} castShadow>
       <cylinderGeometry args={[0.105, 0.105, 0.17, 24]} />
@@ -268,10 +268,10 @@ export const Hero = ({
   return (
     <group {...props} ref={crew} position={[5.6, 0, 5.6]} rotation-y={Math.PI / 4}>
       <CrewMember name="Harvey Yang" labelOffsetY={0.5} model="Junior" shirt="#f2cc3d" trousers="#15191b" position={[0, 0, 0]} phase={0} revealed={visibleCount >= 1} charlieBrownShirt />
-      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" shirt="#ac91de" trousers="#7995c3" position={[-3.1, 0, 0]} phase={0.8} revealed={visibleCount >= 2} />
-      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" shirt="#174a32" trousers="#15191b" position={[-1.55, 0, 0]} phase={1.6} revealed={visibleCount >= 3} />
-      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" shirt="#b7a276" trousers="#34383b" position={[1.55, 0, 0]} phase={2.4} revealed={visibleCount >= 4} />
-      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" shirt="#9bcb7b" trousers="#f4f2ea" position={[3.1, 0, 0]} phase={3.2} revealed={visibleCount >= 5} />
+      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" shirt="#ac91de" trousers="#7995c3" position={[-3.5, 0, 0]} phase={0.8} revealed={visibleCount >= 2} />
+      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" shirt="#174a32" trousers="#15191b" position={[-1.75, 0, 0]} phase={1.6} revealed={visibleCount >= 3} />
+      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" shirt="#b7a276" trousers="#34383b" position={[1.75, 0, 0]} phase={2.4} revealed={visibleCount >= 4} />
+      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" shirt="#9bcb7b" trousers="#f4f2ea" position={[3.5, 0, 0]} phase={3.2} revealed={visibleCount >= 5} />
     </group>
   );
 };
