@@ -12,9 +12,12 @@ const classes: Record<Section, string> = {
 };
 
 export const SectionsProvider = ({ children }: PropsWithChildren) => {
-  const [section, setSection] = useState(0);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [hasEntered, setHasEntered] = useState(false);
+  const isLocalFinalePreview =
+    (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") &&
+    new URLSearchParams(window.location.search).has("finalePreview");
+  const [section, setSection] = useState(isLocalFinalePreview ? -19 : 0);
+  const [slideIndex, setSlideIndex] = useState(isLocalFinalePreview ? SLIDE_COUNT - 1 : 0);
+  const [hasEntered, setHasEntered] = useState(isLocalFinalePreview);
   const activeSection = clampAsSectionValue(section);
 
   useEffect(() => {
@@ -41,9 +44,26 @@ export const SectionsProvider = ({ children }: PropsWithChildren) => {
     rotate(-1);
   }, [hasEntered, rotate]);
 
+  const resetToStart = useCallback(() => {
+    Object.values(classes).forEach((className) => document.body.classList.remove(className));
+    document.body.classList.add(classes[0]);
+    setSection(0);
+    setSlideIndex(0);
+    setHasEntered(false);
+  }, []);
+
   return (
     <SectionsContext.Provider
-      value={{ section, activeSection, slideIndex, slideCount: SLIDE_COUNT, hasEntered, rotate, advance }}
+      value={{
+        section,
+        activeSection,
+        slideIndex,
+        slideCount: SLIDE_COUNT,
+        hasEntered,
+        rotate,
+        advance,
+        resetToStart,
+      }}
     >
       {children}
     </SectionsContext.Provider>

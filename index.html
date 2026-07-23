@@ -30,6 +30,7 @@
         --primary: #f77f00;
         --secondary: #d62828;
         --dark: #003049;
+        --font-boost: 2px;
         --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
         --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
       }
@@ -43,6 +44,7 @@
 
       body {
         background-color: var(--dark);
+        font-size: calc(1rem + var(--font-boost));
         transition: background-color 240ms var(--ease-out);
       }
 
@@ -217,7 +219,7 @@
 
       .duration {
         font-style: italic;
-        font-size: 0.75rem;
+        font-size: calc(0.75rem + var(--font-boost));
         text-align: center;
       }
 
@@ -254,7 +256,7 @@
         width: 100%;
         max-width: 450px;
         border-radius: var(--border-radius);
-        font-size: 1rem;
+        font-size: calc(1rem + var(--font-boost));
         margin-bottom: auto;
         padding: 0.5em 1em;
         background-color: white;
@@ -281,7 +283,7 @@
       }
 
       .search input[type="text"] {
-        font-size: clamp(16px, 1rem, 24px);
+        font-size: calc(clamp(16px, 1rem, 24px) + var(--font-boost));
         font-family: inherit;
         outline: none;
         border: none;
@@ -300,7 +302,7 @@
         flex-direction: column;
         align-items: center;
         gap: 0.65rem;
-        font-size: 0.875rem;
+        font-size: calc(0.875rem + var(--font-boost));
         margin-top: auto;
         margin-inline: auto;
         width: 100%;
@@ -350,12 +352,12 @@
       }
 
       .story-advance strong {
-        font-size: 0.95rem;
+        font-size: calc(0.95rem + var(--font-boost));
         letter-spacing: 0.02em;
       }
 
       .story-advance small {
-        font-size: 0.68rem;
+        font-size: calc(0.68rem + var(--font-boost));
         color: #4a4a4a;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -438,12 +440,12 @@
         padding: 0.7rem 0.75rem;
         color: #111318;
         background: #ffcf00;
-        font: 900 0.8rem/1 monospace;
+        font: 900 calc(0.8rem + var(--font-boost))/1 monospace;
       }
 
       .hero-slide-title strong {
         padding: 0.65rem 1rem 0.72rem;
-        font: 900 clamp(1rem, 2vw, 1.6rem)/0.94 system-ui, sans-serif;
+        font: 900 calc(clamp(1rem, 2vw, 1.6rem) + var(--font-boost))/0.94 system-ui, sans-serif;
         letter-spacing: -0.03em;
       }
 
@@ -476,7 +478,7 @@
         display: block;
         padding-top: 0.65rem;
         text-align: center;
-        font: 900 0.72rem/1 monospace;
+        font: 900 calc(0.72rem + var(--font-boost))/1 monospace;
         letter-spacing: 0.12em;
       }
 
@@ -489,13 +491,13 @@
 
       .skills-story-caption__top > p {
         color: #ffcf00;
-        font: 900 0.68rem/1 monospace;
+        font: 900 calc(0.68rem + var(--font-boost))/1 monospace;
         letter-spacing: 0.1em;
       }
 
       .skills-story-caption h2 {
         margin-block: 0.65rem 0.8rem;
-        font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+        font-size: calc(clamp(1.05rem, 1.6vw, 1.45rem) + var(--font-boost));
         line-height: 1.08;
       }
 
@@ -504,7 +506,7 @@
         gap: 0.42rem;
         padding-left: 1.2rem;
         color: #d8dbe2;
-        font: 0.73rem/1.35 monospace;
+        font: calc(0.73rem + var(--font-boost))/1.35 monospace;
       }
 
       .skills-story-caption li::marker {
@@ -518,7 +520,7 @@
         padding-top: 0.75rem;
         border-top: 1px solid rgba(255, 255, 255, 0.2);
         color: #ffcf00;
-        font: 800 0.68rem/1.4 monospace;
+        font: 800 calc(0.68rem + var(--font-boost))/1.4 monospace;
       }
 
       .narrative-deck::before,
@@ -552,7 +554,7 @@
         color: #ffcf00;
         background: rgba(12, 13, 16, 0.88);
         border: 2px solid #e2231a;
-        font: 800 0.7rem/1 monospace;
+        font: 800 calc(0.7rem + var(--font-boost))/1 monospace;
         letter-spacing: 0.08em;
       }
 
@@ -569,6 +571,11 @@
         animation: deck-enter 240ms var(--ease-out) both;
       }
 
+      .custom-story-slide > :not(.slide-atmosphere) {
+        position: relative;
+        z-index: 1;
+      }
+
       .custom-story-slide {
         min-height: min(64dvh, 540px);
         padding: clamp(1.5rem, 4vw, 3.5rem);
@@ -581,14 +588,14 @@
 
       .deck-eyebrow {
         color: #ffcf00;
-        font: 800 0.78rem/1 monospace;
+        font: 800 calc(0.78rem + var(--font-boost))/1 monospace;
         letter-spacing: 0.12em;
       }
 
       .custom-story-slide h2 {
         max-width: 900px;
         padding-inline-end: clamp(3.8rem, 8vw, 6rem);
-        font-size: clamp(1.8rem, 4vw, 3.8rem);
+        font-size: calc(clamp(1.8rem, 4vw, 3.8rem) + var(--font-boost));
         line-height: 1.02;
       }
 
@@ -611,17 +618,17 @@
 
       .test-grid span {
         color: #ffcf00;
-        font: 900 1.1rem monospace;
+        font: 900 calc(1.1rem + var(--font-boost)) monospace;
       }
 
       .test-grid h3 {
         margin-block: 0.75rem 0.55rem;
-        font-size: 1.15rem;
+        font-size: calc(1.15rem + var(--font-boost));
       }
 
       .test-grid p {
         color: #c8ccd5;
-        font-size: 0.88rem;
+        font-size: calc(0.88rem + var(--font-boost));
         line-height: 1.45;
       }
 
@@ -631,7 +638,7 @@
         border-radius: 10px;
         color: #111318;
         background: #ffcf00;
-        font-size: clamp(0.9rem, 2vw, 1.25rem);
+        font-size: calc(clamp(0.9rem, 2vw, 1.25rem) + var(--font-boost));
       }
 
       .audience-challenge {
@@ -663,12 +670,12 @@
 
       .challenge-path b {
         color: white;
-        font-size: 1.5rem;
+        font-size: calc(1.5rem + var(--font-boost));
       }
 
       .audience-challenge > p:last-child {
         color: #d9dde4;
-        font-size: clamp(1rem, 2vw, 1.3rem);
+        font-size: calc(clamp(1rem, 2vw, 1.3rem) + var(--font-boost));
       }
 
       @keyframes deck-enter {
@@ -709,7 +716,7 @@
         border: none;
         box-shadow: unset;
         color: white;
-        font-size: 0.8rem;
+        font-size: calc(0.8rem + var(--font-boost));
         font-weight: 400;
         grid-row: 1 / 2;
         display: flex;
@@ -889,7 +896,7 @@
         border-radius: 8px;
         color: white;
         background: rgba(255, 255, 255, 0.08);
-        font: 800 0.65rem/1.1 monospace;
+        font: 800 calc(0.65rem + var(--font-boost))/1.1 monospace;
         cursor: pointer;
         transition: transform 140ms var(--ease-out), border-color 140ms ease, background 140ms ease;
       }
@@ -907,7 +914,7 @@
 
       .story-eyebrow {
         color: var(--focus);
-        font-size: 0.72rem;
+        font-size: calc(0.72rem + var(--font-boost));
         font-weight: 800;
         letter-spacing: 0.08em;
         margin-bottom: 0.4rem;
@@ -949,14 +956,14 @@
 
       .story-sequence li > span {
         color: var(--focus);
-        font-size: 1rem;
+        font-size: calc(1rem + var(--font-boost));
         font-weight: 900;
       }
 
       .story-click-note {
         margin-top: 1rem;
         color: var(--focus);
-        font-size: 0.72rem;
+        font-size: calc(0.72rem + var(--font-boost));
         text-transform: uppercase;
         letter-spacing: 0.06em;
       }
@@ -1078,7 +1085,7 @@
           id="letters"
           x="50"
           y="50"
-          font-size="100"
+          font-size="102"
           font-weight="bold"
           text-anchor="middle"
           dominant-baseline="middle"

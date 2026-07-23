@@ -2,6 +2,8 @@ import { useSectionsContext } from "@/contexts/Sections";
 import { HeroCalibrationPanel } from "@/features/hero/HeroCalibrationPanel";
 import { StoryMotion } from "./StoryMotion";
 import { StrategySlide } from "./StrategySlide";
+import { FinaleCredits } from "./FinaleCredits";
+import { SlideAtmosphere } from "./SlideAtmosphere";
 import teamQrCode from "@/assets/team_qr_code.png?url";
 import "./StrategySlide.css";
 
@@ -9,6 +11,7 @@ const SHOW_HERO_CALIBRATION_PANEL = false;
 
 const BrickTest = () => (
   <section className="custom-story-slide brick-test">
+    <SlideAtmosphere slideIndex={17} />
     <StoryMotion slideIndex={17} placement="card" />
     <p className="deck-eyebrow">RELATED DIVERSIFICATION DECISION GATE</p>
     <h2>Every entertainment bet must pass the Brick Test.</h2>
@@ -31,6 +34,7 @@ const BrickTest = () => (
 
 const AudienceChallenge = () => (
   <section className="custom-story-slide audience-challenge">
+    <SlideAtmosphere slideIndex={18} />
     <StoryMotion slideIndex={18} placement="card" />
     <p className="deck-eyebrow">INTERACTIVE FINALE</p>
     <h2>If you controlled LEGO's next world, what would you build?</h2>
@@ -82,7 +86,15 @@ export const NarrativeDeck = () => {
     );
   }
   if (slideIndex === 1) return <SkillsStory />;
-  if (slideIndex === 2 || slideIndex === 19) {
+  if (slideIndex === 19) {
+    return (
+      <>
+        <SlideAtmosphere slideIndex={19} placement="scene" />
+        <FinaleCredits />
+      </>
+    );
+  }
+  if (slideIndex === 2) {
     return <StoryMotion slideIndex={slideIndex} placement="overlay" />;
   }
   if (slideIndex < 3 || slideIndex > 18) return null;

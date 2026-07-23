@@ -119,7 +119,7 @@ const NamePlate = ({ name, offsetY }: { name: string; offsetY: number }) => {
     context.strokeStyle = "#ffcf00";
     context.stroke();
     context.fillStyle = "#ffffff";
-    context.font = "700 45px system-ui, sans-serif";
+    context.font = "700 47px system-ui, sans-serif";
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText(name, 256, 66, 450);

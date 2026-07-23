@@ -1,6 +1,6 @@
-import { Suspense, useMemo } from "react";
-import { useLoader, useThree } from "@react-three/fiber";
-import { MathUtils, SRGBColorSpace, TextureLoader } from "three";
+import { Suspense, useMemo, useRef } from "react";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { MathUtils, SRGBColorSpace, TextureLoader, type Group, type PointLight } from "three";
 import { CrewMember } from "@/features/hero";
 import { useRotatingDisplayContext } from "@/contexts/RotatingDisplay";
 import { useMediaQuery } from "@/hooks";
@@ -10,6 +10,7 @@ import storyMinifigures from "@/assets/story_minifigures.png?url";
 import storyLicensedWorlds from "@/assets/story_licensed_worlds.png?url";
 import ninjago from "@/assets/ninjago.png?url";
 import legoFortnite from "@/assets/lego_fortnite.png?url";
+import { getFinalePlayback } from "@/features/interaction/finaleAudio";
 
 const MINIFIGURE_DIMENSIONS = { width: 2.5, depth: 1.5 };
 
@@ -21,6 +22,8 @@ const STORY_BEATS = [
     year: "1999",
     label: "BORROW A STORY",
     work: storyLicensedWorlds,
+    sequence: 1,
+    light: "#e2231a",
   },
   {
     model: "Junior",
@@ -29,6 +32,8 @@ const STORY_BEATS = [
     year: "2011",
     label: "OWN A WORLD",
     work: ninjago,
+    sequence: 2,
+    light: "#f57c00",
   },
   {
     model: "Junior",
@@ -37,6 +42,8 @@ const STORY_BEATS = [
     year: "1978",
     label: "GIVE CHARACTERS",
     work: storyMinifigures,
+    sequence: 0,
+    light: "#087bc1",
   },
   {
     model: "Intern",
@@ -45,6 +52,8 @@ const STORY_BEATS = [
     year: "2023",
     label: "PARTNER TO SCALE",
     work: legoFortnite,
+    sequence: 3,
+    light: "#a86ee8",
   },
 ] as const;
 
@@ -100,10 +109,10 @@ const StoryCard = ({
     context.stroke();
     context.textAlign = "center";
     context.fillStyle = "#ffcf00";
-    context.font = "800 44px system-ui, sans-serif";
+    context.font = "800 46px system-ui, sans-serif";
     context.fillText(year, 256, 62);
     context.fillStyle = "#ffffff";
-    context.font = "700 34px system-ui, sans-serif";
+    context.font = "700 36px system-ui, sans-serif";
     context.fillText(label, 256, 116, 454);
     return node;
   }, [label, year]);
@@ -114,6 +123,88 @@ const StoryCard = ({
         <canvasTexture attach="map" args={[canvas]} colorSpace={SRGBColorSpace} />
       </spriteMaterial>
     </sprite>
+  );
+};
+
+type StoryBeat = (typeof STORY_BEATS)[number];
+
+const StoryBeatSequence = ({
+  beat,
+  index,
+  position,
+  rotationY,
+  cardOffset,
+}: {
+  beat: StoryBeat;
+  index: number;
+  position: [number, number, number];
+  rotationY: number;
+  cardOffset: [number, number, number];
+}) => {
+  const root = useRef<Group>(null!);
+  const light = useRef<PointLight>(null!);
+
+  useFrame(({ clock }, delta) => {
+    const playback = getFinalePlayback();
+    const revealStart = 0.055 + beat.sequence * 0.2;
+    const nextStart = revealStart + 0.2;
+    const reveal = MathUtils.smootherstep(playback.progress, revealStart, revealStart + 0.055);
+    const focusIn = MathUtils.smootherstep(playback.progress, revealStart, revealStart + 0.025);
+    const focusOut = 1 - MathUtils.smootherstep(playback.progress, nextStart - 0.035, nextStart);
+    const finalAssembly = MathUtils.smootherstep(playback.progress, 0.835, 0.94);
+    const focus = Math.max(0, focusIn * focusOut);
+    const visibleScale = reveal * (0.88 + focus * 0.18 + finalAssembly * 0.08);
+    const slideDirection = beat.sequence % 2 === 0 ? -1 : 1;
+    const bob = focus * Math.sin(clock.elapsedTime * 1.6 + beat.sequence) * 0.055;
+
+    root.current.visible = reveal > 0.001 || playback.hasEnded;
+    const scale = MathUtils.damp(root.current.scale.x, visibleScale, 5.2, delta);
+    root.current.scale.setScalar(scale);
+    root.current.position.x = MathUtils.damp(
+      root.current.position.x,
+      position[0] + (1 - reveal) * slideDirection * 2.4,
+      4.4,
+      delta,
+    );
+    root.current.position.y = MathUtils.damp(
+      root.current.position.y,
+      position[1] - (1 - reveal) * 1.7 + bob,
+      4.4,
+      delta,
+    );
+    root.current.position.z = MathUtils.damp(
+      root.current.position.z,
+      position[2] + (1 - reveal) * slideDirection * 0.65,
+      4.4,
+      delta,
+    );
+    light.current.intensity = MathUtils.damp(
+      light.current.intensity,
+      0.15 + focus * 2.7 + finalAssembly * 0.65,
+      4,
+      delta,
+    );
+  });
+
+  return (
+    <group ref={root} position={position} scale={0.001} visible={false}>
+      <pointLight ref={light} color={beat.light} position={[0, 2.15, 0]} distance={5.5} decay={1.7} />
+      <StoryCard year={beat.year} label={beat.label} position={cardOffset} />
+      <WorkPlacard image={beat.work} position={[0, 1.17, 0]} />
+      <group rotation-y={rotationY}>
+        <CrewMember
+          model={beat.model}
+          shirt={beat.shirt}
+          trousers={beat.trousers}
+          position={[0, 0, 0]}
+          phase={index * 0.85}
+          name={beat.label}
+          labelOffsetY={0}
+          revealed
+          showNamePlate={false}
+        />
+      </group>
+    </group>
   );
 };
 
@@ -155,25 +246,20 @@ export const Contact = () => {
         const positionOffset = MINIFIGURE_DIMENSIONS.width * (Math.floor(index / 2) + 1) - 1;
         const x = isEven ? -origin - positionOffset : -origin;
         const z = isEven ? origin : origin + positionOffset;
-        const cardX = index === 0 ? x - 1 : x;
-        const cardZ = index === 1 ? z + 1 : z;
+        const cardOffset: [number, number, number] = [
+          index === 0 ? -1 : 0,
+          2.8,
+          index === 1 ? 1 : 0,
+        ];
         return (
           <Suspense key={beat.label} fallback={null}>
-            <StoryCard year={beat.year} label={beat.label} position={[cardX, 3.35, cardZ]} />
-            <WorkPlacard image={beat.work} position={[x, 1.72, z]} />
-            <group position={[x, 0.55, z]} rotation-y={rotationY} scale={0.92}>
-              <CrewMember
-                model={beat.model}
-                shirt={beat.shirt}
-                trousers={beat.trousers}
-                position={[0, 0, 0]}
-                phase={index * 0.85}
-                name={beat.label}
-                labelOffsetY={0}
-                revealed
-                showNamePlate={false}
-              />
-            </group>
+            <StoryBeatSequence
+              beat={beat}
+              index={index}
+              position={[x, 0.55, z]}
+              rotationY={rotationY}
+              cardOffset={cardOffset}
+            />
           </Suspense>
         );
       })}

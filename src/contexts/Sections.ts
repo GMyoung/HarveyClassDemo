@@ -9,6 +9,7 @@ type SectionsContextValue = {
   hasEntered: boolean;
   rotate: (direction: 1 | -1) => void;
   advance: () => void;
+  resetToStart: () => void;
 };
 
 export const SectionsContext = createContext<SectionsContextValue | null>(null);

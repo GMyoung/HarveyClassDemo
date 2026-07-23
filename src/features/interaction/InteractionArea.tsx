@@ -2,6 +2,17 @@ import { useCallback, useEffect } from "react";
 import { useSectionsContext } from "@/contexts/Sections";
 import { useModalContext } from "@/contexts/Modal";
 import { SLIDE_TITLES, type ProjectName } from "@/constants";
+import {
+  getFinalePlayback,
+  prepareFinaleAudio,
+  startFinaleAudio,
+  stopFinaleAudio,
+} from "./finaleAudio";
+import {
+  DISMISS_STORY_TRAILER_EVENT,
+  START_STORY_TRAILER_EVENT,
+  hasStoryTrailer,
+} from "./trailerEvents";
 
 const RemoteIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -15,11 +26,30 @@ const RemoteIcon = () => (
 const projectSequence: ProjectName[] = ["ninjago", "lego_movie", "lego_fortnite"];
 
 export const InteractionArea = () => {
-  const { slideIndex, slideCount, hasEntered, advance, rotate } = useSectionsContext();
+  const { slideIndex, slideCount, hasEntered, advance, rotate, resetToStart } = useSectionsContext();
   const { activeKey, open, close } = useModalContext();
 
   const goNext = useCallback(() => {
+    if (document.querySelector("[data-story-trailer-active]")) {
+      window.dispatchEvent(new Event(DISMISS_STORY_TRAILER_EVENT));
+      return;
+    }
+
+    if (slideIndex === slideCount - 1) {
+      const playback = getFinalePlayback();
+      if (playback.hasStarted || playback.isPlaying || playback.hasEnded) {
+        stopFinaleAudio();
+        resetToStart();
+      } else {
+        void startFinaleAudio();
+      }
+      return;
+    }
+
     if (slideIndex !== 2) {
+      if (hasStoryTrailer(slideIndex + 1)) {
+        window.dispatchEvent(new Event(START_STORY_TRAILER_EVENT));
+      }
       advance();
       return;
     }
@@ -33,9 +63,10 @@ export const InteractionArea = () => {
       close();
       advance();
     }
-  }, [activeKey, advance, close, open, slideIndex]);
+  }, [activeKey, advance, close, open, resetToStart, slideCount, slideIndex]);
 
   const goPrevious = useCallback(() => {
+    if (slideIndex === slideCount - 1) stopFinaleAudio();
     const projectIndex = projectSequence.findIndex((key) => key === activeKey);
     if (slideIndex === 2 && projectIndex >= 0) {
       if (projectIndex === 0) close();
@@ -45,7 +76,7 @@ export const InteractionArea = () => {
 
     if (hasEntered) rotate(1);
     else advance();
-  }, [activeKey, advance, close, hasEntered, open, rotate, slideIndex]);
+  }, [activeKey, advance, close, hasEntered, open, rotate, slideCount, slideIndex]);
 
   const cue =
     slideIndex === 2
@@ -57,8 +88,12 @@ export const InteractionArea = () => {
             ? `Next: ${SLIDE_TITLES[3]}`
             : "Open: NINJAGO Story"
       : slideIndex === slideCount - 1
-        ? "Back to the Crew"
+        ? "Credits playing · Hold on screen"
         : `Next: ${SLIDE_TITLES[slideIndex + 1]}`;
+
+  useEffect(() => {
+    if (slideIndex >= slideCount - 3) prepareFinaleAudio();
+  }, [slideCount, slideIndex]);
 
   useEffect(() => {
     const nextKeys = new Set(["ArrowRight", "ArrowDown", "PageDown", "Enter", " "]);
@@ -93,6 +128,18 @@ export const InteractionArea = () => {
 
       if (hasOpenDialog()) {
         event.stopPropagation();
+        didDrag = false;
+        goNext();
+        return;
+      }
+
+      if (slideIndex === slideCount - 1) {
+        didDrag = false;
+        goNext();
+        return;
+      }
+
+      if (hasStoryTrailer(slideIndex + 1)) {
         didDrag = false;
         goNext();
         return;
@@ -145,23 +192,27 @@ export const InteractionArea = () => {
       window.removeEventListener("click", handleClick, true);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [goNext, goPrevious]);
+  }, [goNext, goPrevious, slideCount, slideIndex]);
 
   return (
     <div className="interaction-area">
       <div className="actions">
-        <button className="story-advance" onClick={goNext} aria-label="Advance the LEGO story">
-          <RemoteIcon />
-          <span>
-            <strong>{hasEntered ? cue : "Click anywhere to meet the crew"}</strong>
-            <small>{hasEntered ? "Click anywhere | Remote next" : "Remote: Space / Right / Page Down"}</small>
-          </span>
-        </button>
-        <div className="story-progress" aria-hidden="true">
-          {Array.from({ length: slideCount }, (_, slide) => (
-            <span key={slide} className={hasEntered && slideIndex === slide ? "active" : ""} />
-          ))}
-        </div>
+        {slideIndex !== slideCount - 1 && (
+          <>
+            <button className="story-advance" onClick={goNext} aria-label="Advance the LEGO story">
+              <RemoteIcon />
+              <span>
+                <strong>{hasEntered ? cue : "Click anywhere to meet the crew"}</strong>
+                <small>{hasEntered ? "Click anywhere | Remote next" : "Remote: Space / Right / Page Down"}</small>
+              </span>
+            </button>
+            <div className="story-progress" aria-hidden="true">
+              {Array.from({ length: slideCount }, (_, slide) => (
+                <span key={slide} className={hasEntered && slideIndex === slide ? "active" : ""} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
