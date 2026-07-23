@@ -6,7 +6,7 @@ import {
   type HairTransform,
 } from "./hairCalibration";
 
-export const HERO_CALIBRATION_STORAGE_KEY = "lego-hero-calibration-v3";
+export const HERO_CALIBRATION_STORAGE_KEY = "lego-hero-calibration-v4";
 
 export const CREW_IDS = ["harvey", "olivia", "tinya", "june", "anglea"] as const;
 export type CrewId = (typeof CREW_IDS)[number];
@@ -44,10 +44,10 @@ export const createDefaultHeroCalibration = (): HeroCalibration => ({
   version: 1,
   crewPositions: {
     harvey: [0, 0, 0],
-    olivia: [-3.5, 0, 0],
-    tinya: [-1.75, 0, 0],
-    june: [1.75, 0, 0],
-    anglea: [3.5, 0, 0],
+    olivia: [-3.5, 0, 1],
+    tinya: [-1.75, 0, 0.55],
+    june: [1.75, 0, 0.35],
+    anglea: [3.5, 0, 0.9],
   },
   hairTransforms: {
     HairFrenchBraid: cloneHairTransform(HAIR_TRANSFORMS.HairFrenchBraid),

@@ -32,6 +32,7 @@ type CrewMemberProps = {
   name: string;
   labelOffsetY: number;
   revealed: boolean;
+  facingAngle?: number;
   charlieBrownShirt?: boolean;
   hair?: CrewHair;
   hairColor?: string;
@@ -182,6 +183,7 @@ export const CrewMember = ({
   name,
   labelOffsetY,
   revealed,
+  facingAngle = 0,
   charlieBrownShirt = false,
   hair,
   hairColor = "#21140f",
@@ -234,7 +236,7 @@ export const CrewMember = ({
   });
 
   return (
-    <group position={position} dispose={null}>
+    <group position={position} rotation-y={facingAngle} dispose={null}>
       <group ref={member} position={[0, -3.5, 0]} scale={1.04}>
         <primitive object={scene} />
         <mesh geometry={standingLegGeometry} material={trousersMaterial} position={[-0.24, 0.45, -0.75]} castShadow receiveShadow />
@@ -281,10 +283,10 @@ export const Hero = ({
   return (
     <group {...props} ref={crew} position={[5.6, 0, 5.6]} rotation-y={Math.PI / 4}>
       <CrewMember name="Harvey Yang" labelOffsetY={0.5} model="Junior" shirt="#f2cc3d" trousers="#15191b" position={calibration.crewPositions.harvey} phase={0} revealed={visibleCount >= 1} charlieBrownShirt />
-      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" hairTransform={calibration.hairTransforms.HairFrenchBraid} shirt="#ac91de" trousers="#7995c3" position={calibration.crewPositions.olivia} phase={0.8} revealed={visibleCount >= 2} />
-      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" hairTransform={calibration.hairTransforms.HairSideBraids} shirt="#174a32" trousers="#15191b" position={calibration.crewPositions.tinya} phase={1.6} revealed={visibleCount >= 3} />
-      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" hairTransform={calibration.hairTransforms.HairPigtailsHigh} shirt="#b7a276" trousers="#34383b" position={calibration.crewPositions.june} phase={2.4} revealed={visibleCount >= 4} />
-      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" hairTransform={calibration.hairTransforms.HairPigtailsClassic} shirt="#9bcb7b" trousers="#f4f2ea" position={calibration.crewPositions.anglea} phase={3.2} revealed={visibleCount >= 5} />
+      <CrewMember name="Olivia" labelOffsetY={0} model="Intern" hair="HairFrenchBraid" hairColor="#2d1710" hairTransform={calibration.hairTransforms.HairFrenchBraid} shirt="#ac91de" trousers="#7995c3" position={calibration.crewPositions.olivia} phase={0.8} facingAngle={MathUtils.degToRad(20)} revealed={visibleCount >= 2} />
+      <CrewMember name="Tinya" labelOffsetY={0.28} model="Intern" hair="HairSideBraids" hairColor="#15110f" hairTransform={calibration.hairTransforms.HairSideBraids} shirt="#174a32" trousers="#15191b" position={calibration.crewPositions.tinya} phase={1.6} facingAngle={MathUtils.degToRad(10)} revealed={visibleCount >= 3} />
+      <CrewMember name="June" labelOffsetY={0.28} model="Intern" hair="HairPigtailsHigh" hairColor="#5a2e1d" hairTransform={calibration.hairTransforms.HairPigtailsHigh} shirt="#b7a276" trousers="#34383b" position={calibration.crewPositions.june} phase={2.4} facingAngle={MathUtils.degToRad(-10)} revealed={visibleCount >= 4} />
+      <CrewMember name="Anglea" labelOffsetY={0} model="Intern" hair="HairPigtailsClassic" hairColor="#3b2018" hairTransform={calibration.hairTransforms.HairPigtailsClassic} shirt="#9bcb7b" trousers="#f4f2ea" position={calibration.crewPositions.anglea} phase={3.2} facingAngle={MathUtils.degToRad(-20)} revealed={visibleCount >= 5} />
     </group>
   );
 };

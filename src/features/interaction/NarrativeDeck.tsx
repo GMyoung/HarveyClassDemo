@@ -4,6 +4,8 @@ import { StoryMotion } from "./StoryMotion";
 import { StrategySlide } from "./StrategySlide";
 import "./StrategySlide.css";
 
+const SHOW_HERO_CALIBRATION_PANEL = false;
+
 const BrickTest = () => (
   <section className="custom-story-slide brick-test">
     <StoryMotion slideIndex={17} placement="card" />
@@ -71,7 +73,7 @@ export const NarrativeDeck = () => {
           <span>01</span>
           <strong>MEET THE<br />CREW</strong>
         </div>
-        <HeroCalibrationPanel />
+        {SHOW_HERO_CALIBRATION_PANEL && <HeroCalibrationPanel />}
         {hasEntered && <StoryMotion slideIndex={0} placement="overlay" />}
       </>
     );
